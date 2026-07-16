@@ -42,7 +42,7 @@
 
 - 保持 CDP 仅监听本机回环地址，不修改 Store 安装包或 `app.asar`。
 - 保留现有配置备份与恢复快捷方式。
-- 原 Fiona 图片保存在 `windows/assets/dream-reference.fiona-original.png`。
+- 原 Fiona 图片继续保存在仓库原有的 `windows/assets/dream-reference.png`，不与主题包主图混用。
 - 主题需覆盖从 `1280x720` 到超宽桌面分辨率，不能产生页面溢出；人物在常用比例下均需保持可见。
 - Codex DOM 结构变化导致关键节点缺失时，验证必须失败，不能误报主题加载成功。
 
