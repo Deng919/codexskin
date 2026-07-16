@@ -38,3 +38,11 @@ test("installer shortcuts preserve the selected active theme behavior", async ()
   assert.match(install, /\[string\]\$ThemeId/);
   assert.match(install, /-ThemeId/);
 });
+
+test("injector fallback removal clears the new theme assets", async () => {
+  const injector = await read("scripts/injector.mjs");
+
+  assert.match(injector, /removeProperty\('--dream-hero'\)/);
+  assert.match(injector, /removeProperty\('--dream-texture'\)/);
+  assert.match(injector, /themeId:\s*window\.__CODEX_DREAM_SKIN_STATE__/);
+});

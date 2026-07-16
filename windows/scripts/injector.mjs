@@ -156,7 +156,8 @@ async function removeFromSession(session) {
     const state = window.__CODEX_DREAM_SKIN_STATE__;
     if (state?.cleanup) return state.cleanup();
     document.documentElement?.classList.remove('codex-dream-skin');
-    document.documentElement?.style.removeProperty('--dream-art');
+    document.documentElement?.style.removeProperty('--dream-hero');
+    document.documentElement?.style.removeProperty('--dream-texture');
     document.getElementById('codex-dream-skin-style')?.remove();
     document.getElementById('codex-dream-skin-chrome')?.remove();
     return true;
@@ -176,6 +177,7 @@ async function verifySession(session) {
     const result = {
       installed: document.documentElement.classList.contains('codex-dream-skin'),
       version: window.__CODEX_DREAM_SKIN_STATE__?.version ?? null,
+      themeId: window.__CODEX_DREAM_SKIN_STATE__?.themeId ?? null,
       stylePresent: Boolean(document.getElementById('codex-dream-skin-style')),
       chromePresent: Boolean(document.getElementById('codex-dream-skin-chrome')),
       chromePointerEvents: getComputedStyle(document.getElementById('codex-dream-skin-chrome') || document.body).pointerEvents,
