@@ -55,6 +55,16 @@ html.codex-dream-skin aside.app-shell-left-panel nav {
   background: transparent !important;
 }
 
+html.codex-dream-skin aside.app-shell-left-panel span,
+html.codex-dream-skin aside.app-shell-left-panel div,
+html.codex-dream-skin aside.app-shell-left-panel p {
+  color: var(--theme-text) !important;
+}
+
+html.codex-dream-skin aside.app-shell-left-panel svg {
+  color: var(--theme-gold) !important;
+}
+
 html.codex-dream-skin aside.app-shell-left-panel button,
 html.codex-dream-skin aside.app-shell-left-panel a {
   color: var(--theme-text) !important;
@@ -294,6 +304,11 @@ html.codex-dream-skin .dream-home {
   box-shadow: 0 13px 26px rgba(0, 0, 0, .3) !important;
 }
 
+.dream-home .group\/home-suggestions button span,
+.dream-home .group\/home-suggestions button p {
+  color: var(--theme-text) !important;
+}
+
 .dream-home .group\/home-suggestions button > span:first-child > span:first-child {
   width: 38px;
   height: 38px;
@@ -322,6 +337,19 @@ html.codex-dream-skin .composer-surface-chrome {
   overflow: visible !important;
 }
 
+html.codex-dream-skin .composer-surface-chrome,
+html.codex-dream-skin .composer-surface-chrome span,
+html.codex-dream-skin .composer-surface-chrome div,
+html.codex-dream-skin .composer-surface-chrome button,
+html.codex-dream-skin .composer-surface-chrome svg {
+  color: var(--theme-text) !important;
+}
+
+html.codex-dream-skin .composer-surface-chrome [data-placeholder]::before,
+html.codex-dream-skin .composer-surface-chrome [data-placeholder]::after {
+  color: var(--theme-muted) !important;
+}
+
 .dream-home div:has(> .horizontal-scroll-fade-mask .group\/project-selector) {
   position: relative;
   border: 1px solid color-mix(in srgb, var(--theme-line) 56%, transparent);
@@ -334,6 +362,10 @@ html.codex-dream-skin .composer-surface-chrome {
   background: var(--theme-panel-alt) !important;
   color: var(--theme-text) !important;
   box-shadow: none !important;
+}
+
+.dream-home .group\/project-selector > button * {
+  color: var(--theme-text) !important;
 }
 
 html.codex-dream-skin .ProseMirror {

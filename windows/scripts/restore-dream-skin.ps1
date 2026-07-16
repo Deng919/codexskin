@@ -37,7 +37,13 @@ if ($RestoreBaseTheme) {
   if (-not (Test-Path -LiteralPath $backup)) { throw 'No pre-install config backup is available.' }
   $backupContent = Get-Content -LiteralPath $backup -Raw
   $currentContent = Get-Content -LiteralPath $config -Raw
-  foreach ($key in @('appearanceTheme', 'appearanceLightCodeThemeId', 'appearanceLightChromeTheme')) {
+  foreach ($key in @(
+    'appearanceTheme',
+    'appearanceLightCodeThemeId',
+    'appearanceLightChromeTheme',
+    'appearanceDarkCodeThemeId',
+    'appearanceDarkChromeTheme'
+  )) {
     $pattern = "(?m)^$([regex]::Escape($key))\s*=.*(?:\r?\n)?"
     $saved = [regex]::Match($backupContent, $pattern)
     if ([regex]::IsMatch($currentContent, $pattern)) {

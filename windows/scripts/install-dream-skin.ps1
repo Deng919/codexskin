@@ -28,9 +28,9 @@ if (-not $desktopMatch.Success) {
 }
 $body = $desktopMatch.Groups['body'].Value
 $settings = [ordered]@{
-  appearanceTheme = 'appearanceTheme = "light"'
-  appearanceLightCodeThemeId = 'appearanceLightCodeThemeId = "codex"'
-  appearanceLightChromeTheme = 'appearanceLightChromeTheme = { accent = "#B65CFF", contrast = 64, fonts = { code = "Cascadia Code", ui = "Microsoft YaHei UI" }, ink = "#4A235F", opaqueWindows = true, semanticColors = { diffAdded = "#BCE8CF", diffRemoved = "#F7B8CE", skill = "#C47BFF" }, surface = "#FFF4FA" }'
+  appearanceTheme = 'appearanceTheme = "dark"'
+  appearanceDarkCodeThemeId = 'appearanceDarkCodeThemeId = "codex"'
+  appearanceDarkChromeTheme = 'appearanceDarkChromeTheme = { accent = "#9F252B", contrast = 70, fonts = { code = "Cascadia Code", ui = "Microsoft YaHei UI" }, ink = "#F2ECE4", opaqueWindows = true, semanticColors = { diffAdded = "#3D7A59", diffRemoved = "#A83A43", skill = "#B89352" }, surface = "#100D0E" }'
 }
 foreach ($key in $settings.Keys) {
   $pattern = "(?m)^$([regex]::Escape($key))\s*=.*$"
@@ -52,7 +52,7 @@ if (-not $NoShortcuts) {
     $shortcut.TargetPath = $powershell
     $shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$startScript`" -Port $Port -ThemeId `"$ThemeId`" -RestartExisting"
     $shortcut.WorkingDirectory = $SkillRoot
-    $shortcut.Description = 'Launch Codex with the Dream/Fiona full interface skin'
+    $shortcut.Description = 'Launch Codex with the selected visual theme'
     $shortcut.Save()
   }
   $restore = $shell.CreateShortcut((Join-Path $desktop 'Codex Dream Skin - Restore.lnk'))

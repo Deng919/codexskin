@@ -47,3 +47,17 @@ test("decorative chrome cannot intercept native Codex controls", async () => {
 
   assert.match(css, /#codex-dream-skin-chrome\s*\{[^}]*pointer-events:\s*none/s);
 });
+
+test("xuanjia hero crop keeps the crown and face inside the banner", async () => {
+  const config = JSON.parse(await read("themes/xuanjia-chijin/theme.json"));
+
+  assert.equal(config.layout.heroPosition, "58% 0%");
+});
+
+test("installer selects a dark neutral base theme instead of the old pink chrome", async () => {
+  const install = await read("scripts/install-dream-skin.ps1");
+
+  assert.match(install, /appearanceTheme\s*=\s*'appearanceTheme = "dark"'/);
+  assert.match(install, /appearanceDarkChromeTheme/);
+  assert.doesNotMatch(install, /#B65CFF|#FFF4FA|#4A235F/i);
+});
