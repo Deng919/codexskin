@@ -24,11 +24,15 @@ test("renderer maps visual theme data to CSS variables", async () => {
 
   assert.match(renderer, /__DREAM_HERO_JSON__/);
   assert.match(renderer, /__DREAM_TEXTURE_JSON__/);
+  assert.match(renderer, /__DREAM_CHARACTER_JSON__/);
+  assert.match(renderer, /__DREAM_AVATAR_JSON__/);
   assert.match(renderer, /__DREAM_THEME_JSON__/);
   assert.match(renderer, /--theme-hero-size/);
   assert.match(renderer, /--theme-hero-position/);
   assert.match(renderer, /--theme-overlay-strength/);
   assert.match(renderer, /--theme-texture-opacity/);
+  assert.match(renderer, /--dream-character/);
+  assert.match(renderer, /--dream-avatar/);
 });
 
 test("skin CSS is data-driven and contains no Fiona pink-purple palette", async () => {

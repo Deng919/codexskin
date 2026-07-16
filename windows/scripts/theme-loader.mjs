@@ -65,11 +65,19 @@ function requireHeroPosition(value) {
 
 function validateImageName(value, label) {
   const name = requireText(value, label, 120);
-  if (path.basename(name) !== name) throw new Error(`${label} must stay inside its theme directory`);
-  const extension = path.extname(name).toLowerCase();
+  const normalized = name.replaceAll("\\", "/");
+  const parts = normalized.split("/");
+  if (
+    path.isAbsolute(name) ||
+    path.win32.isAbsolute(name) ||
+    parts.some((part) => !part || part === "." || part === "..")
+  ) {
+    throw new Error(`${label} must stay inside its theme directory`);
+  }
+  const extension = path.extname(normalized).toLowerCase();
   const mime = MIME_TYPES.get(extension);
   if (!mime) throw new Error(`${label} must be a PNG, JPEG, or WebP file`);
-  return { name, mime };
+  return { name: normalized, mime };
 }
 
 async function readImage(root, descriptor, label) {
@@ -113,6 +121,8 @@ export async function loadTheme(themeDir) {
     name: requireText(raw.name, "name", 80),
     hero: requireText(raw.hero, "hero", 120),
     texture: requireText(raw.texture, "texture", 120),
+    character: requireText(raw.character, "character", 120),
+    avatar: requireText(raw.avatar, "avatar", 120),
     colors,
     layout: {
       heroSize: requireHeroSize(layoutInput.heroSize),
@@ -124,11 +134,15 @@ export async function loadTheme(themeDir) {
 
   const heroDescriptor = validateImageName(theme.hero, "hero");
   const textureDescriptor = validateImageName(theme.texture, "texture");
-  const [hero, texture] = await Promise.all([
+  const characterDescriptor = validateImageName(theme.character, "character");
+  const avatarDescriptor = validateImageName(theme.avatar, "avatar");
+  const [hero, texture, character, avatar] = await Promise.all([
     readImage(root, heroDescriptor, "hero"),
     readImage(root, textureDescriptor, "texture"),
+    readImage(root, characterDescriptor, "character"),
+    readImage(root, avatarDescriptor, "avatar"),
   ]);
-  return { root, theme, hero, texture };
+  return { root, theme, hero, texture, character, avatar };
 }
 
 export async function buildThemePayload(themeDir) {
@@ -137,5 +151,7 @@ export async function buildThemePayload(themeDir) {
     theme: loaded.theme,
     heroDataUrl: `data:${loaded.hero.mime};base64,${loaded.hero.bytes.toString("base64")}`,
     textureDataUrl: `data:${loaded.texture.mime};base64,${loaded.texture.bytes.toString("base64")}`,
+    characterDataUrl: `data:${loaded.character.mime};base64,${loaded.character.bytes.toString("base64")}`,
+    avatarDataUrl: `data:${loaded.avatar.mime};base64,${loaded.avatar.bytes.toString("base64")}`,
   };
 }

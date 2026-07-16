@@ -139,6 +139,8 @@ async function loadPayload(themeDir) {
     .replace("__DREAM_CSS_JSON__", JSON.stringify(css))
     .replace("__DREAM_HERO_JSON__", JSON.stringify(themePayload.heroDataUrl))
     .replace("__DREAM_TEXTURE_JSON__", JSON.stringify(themePayload.textureDataUrl))
+    .replace("__DREAM_CHARACTER_JSON__", JSON.stringify(themePayload.characterDataUrl))
+    .replace("__DREAM_AVATAR_JSON__", JSON.stringify(themePayload.avatarDataUrl))
     .replace("__DREAM_THEME_JSON__", JSON.stringify(themePayload.theme));
 }
 
@@ -158,6 +160,8 @@ async function removeFromSession(session) {
     document.documentElement?.classList.remove('codex-dream-skin');
     document.documentElement?.style.removeProperty('--dream-hero');
     document.documentElement?.style.removeProperty('--dream-texture');
+    document.documentElement?.style.removeProperty('--dream-character');
+    document.documentElement?.style.removeProperty('--dream-avatar');
     document.getElementById('codex-dream-skin-style')?.remove();
     document.getElementById('codex-dream-skin-chrome')?.remove();
     return true;

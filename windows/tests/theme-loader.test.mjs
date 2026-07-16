@@ -15,6 +15,8 @@ function baseTheme(overrides = {}) {
     name: "玄甲赤金",
     hero: "hero.png",
     texture: "texture.png",
+    character: "assets/xuanjia-character-cutout.png",
+    avatar: "assets/xuanjia-avatar.png",
     colors: {
       background: "#100D0E",
       panel: "#171214",
@@ -40,8 +42,15 @@ async function makeTheme(overrides = {}, options = {}) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "codex-theme-test-"));
   const theme = baseTheme(overrides);
   await fs.writeFile(path.join(root, "theme.json"), `${JSON.stringify(theme, null, 2)}\n`);
+  await fs.mkdir(path.join(root, "assets"), { recursive: true });
   if (!options.skipHero) await fs.writeFile(path.join(root, "hero.png"), Buffer.from("hero"));
   if (!options.skipTexture) await fs.writeFile(path.join(root, "texture.png"), Buffer.from("texture"));
+  if (!options.skipCharacter) {
+    await fs.writeFile(path.join(root, "assets", "xuanjia-character-cutout.png"), Buffer.from("character"));
+  }
+  if (!options.skipAvatar) {
+    await fs.writeFile(path.join(root, "assets", "xuanjia-avatar.png"), Buffer.from("avatar"));
+  }
   return root;
 }
 
@@ -55,10 +64,12 @@ test("loads a valid visual-only theme", async (t) => {
   assert.equal(loaded.theme.layout.heroPosition, "58% 36%");
   assert.equal(loaded.hero.mime, "image/png");
   assert.equal(loaded.texture.mime, "image/png");
+  assert.equal(loaded.character.mime, "image/png");
+  assert.equal(loaded.avatar.mime, "image/png");
   assert.equal("tagline" in loaded.theme, false);
 });
 
-test("builds data URLs for both local theme images", async (t) => {
+test("builds data URLs for all local theme images", async (t) => {
   const root = await makeTheme();
   t.after(() => fs.rm(root, { recursive: true, force: true }));
 
@@ -66,6 +77,8 @@ test("builds data URLs for both local theme images", async (t) => {
 
   assert.match(payload.heroDataUrl, /^data:image\/png;base64,/);
   assert.match(payload.textureDataUrl, /^data:image\/png;base64,/);
+  assert.match(payload.characterDataUrl, /^data:image\/png;base64,/);
+  assert.match(payload.avatarDataUrl, /^data:image\/png;base64,/);
   assert.equal(payload.theme.name, "玄甲赤金");
 });
 
@@ -74,6 +87,13 @@ test("rejects image traversal outside the theme directory", async (t) => {
   t.after(() => fs.rm(root, { recursive: true, force: true }));
 
   await assert.rejects(loadTheme(root), /hero must stay inside its theme directory/);
+});
+
+test("rejects character traversal outside the theme directory", async (t) => {
+  const root = await makeTheme({ character: "../character.png" });
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+
+  await assert.rejects(loadTheme(root), /character must stay inside its theme directory/);
 });
 
 test("rejects unsupported schemas", async (t) => {

@@ -1,4 +1,4 @@
-((cssText, heroDataUrl, textureDataUrl, themeConfig) => {
+((cssText, heroDataUrl, textureDataUrl, characterDataUrl, avatarDataUrl, themeConfig) => {
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
   const CHROME_ID = "codex-dream-skin-chrome";
@@ -9,6 +9,7 @@
     "--theme-accent-alt", "--theme-gold", "--theme-text", "--theme-muted",
     "--theme-line", "--theme-hero-size", "--theme-hero-position",
     "--theme-overlay-strength", "--theme-texture-opacity", "--dream-hero", "--dream-texture",
+    "--dream-character", "--dream-avatar",
   ];
   window.__CODEX_DREAM_SKIN_DISABLED__ = false;
 
@@ -19,6 +20,8 @@
   if (previous?.resizeHandler) window.removeEventListener("resize", previous.resizeHandler);
   if (previous?.heroUrl) URL.revokeObjectURL(previous.heroUrl);
   if (previous?.textureUrl) URL.revokeObjectURL(previous.textureUrl);
+  if (previous?.characterUrl) URL.revokeObjectURL(previous.characterUrl);
+  if (previous?.avatarUrl) URL.revokeObjectURL(previous.avatarUrl);
 
   const objectUrlFromData = (dataUrl) => {
     const comma = dataUrl.indexOf(",");
@@ -31,6 +34,8 @@
 
   const heroUrl = objectUrlFromData(heroDataUrl);
   const textureUrl = objectUrlFromData(textureDataUrl);
+  const characterUrl = objectUrlFromData(characterDataUrl);
+  const avatarUrl = objectUrlFromData(avatarDataUrl);
 
   const applyThemeVariables = (root) => {
     const colors = THEME.colors || {};
@@ -51,6 +56,8 @@
       "--theme-texture-opacity": String(layout.textureOpacity ?? 0.12),
       "--dream-hero": `url("${heroUrl}")`,
       "--dream-texture": `url("${textureUrl}")`,
+      "--dream-character": `url("${characterUrl}")`,
+      "--dream-avatar": `url("${avatarUrl}")`,
     };
     for (const [name, value] of Object.entries(variables)) root.style.setProperty(name, value);
   };
@@ -116,6 +123,8 @@
     if (state?.resizeHandler) window.removeEventListener("resize", state.resizeHandler);
     if (state?.heroUrl) URL.revokeObjectURL(state.heroUrl);
     if (state?.textureUrl) URL.revokeObjectURL(state.textureUrl);
+    if (state?.characterUrl) URL.revokeObjectURL(state.characterUrl);
+    if (state?.avatarUrl) URL.revokeObjectURL(state.avatarUrl);
     delete window[STATE_KEY];
     return true;
   };
@@ -142,9 +151,11 @@
     resizeHandler,
     heroUrl,
     textureUrl,
+    characterUrl,
+    avatarUrl,
     themeId: THEME.id || null,
     version: VERSION,
   };
   ensure();
   return { installed: true, version: VERSION, themeId: THEME.id || null };
-})(__DREAM_CSS_JSON__, __DREAM_HERO_JSON__, __DREAM_TEXTURE_JSON__, __DREAM_THEME_JSON__)
+})(__DREAM_CSS_JSON__, __DREAM_HERO_JSON__, __DREAM_TEXTURE_JSON__, __DREAM_CHARACTER_JSON__, __DREAM_AVATAR_JSON__, __DREAM_THEME_JSON__)

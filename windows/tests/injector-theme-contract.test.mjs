@@ -19,6 +19,8 @@ test("injector requires and loads a theme directory", async () => {
   assert.doesNotMatch(injector, /dream-reference\.png/);
   assert.match(injector, /__DREAM_HERO_JSON__/);
   assert.match(injector, /__DREAM_TEXTURE_JSON__/);
+  assert.match(injector, /__DREAM_CHARACTER_JSON__/);
+  assert.match(injector, /__DREAM_AVATAR_JSON__/);
   assert.match(injector, /__DREAM_THEME_JSON__/);
 });
 
@@ -44,5 +46,7 @@ test("injector fallback removal clears the new theme assets", async () => {
 
   assert.match(injector, /removeProperty\('--dream-hero'\)/);
   assert.match(injector, /removeProperty\('--dream-texture'\)/);
+  assert.match(injector, /removeProperty\('--dream-character'\)/);
+  assert.match(injector, /removeProperty\('--dream-avatar'\)/);
   assert.match(injector, /themeId:\s*window\.__CODEX_DREAM_SKIN_STATE__/);
 });
