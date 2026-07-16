@@ -4,6 +4,8 @@
   "name": "玄甲赤金",
   "hero": "hero.png",
   "texture": "texture.png",
+  "character": "assets/xuanjia-character-cutout.png",
+  "avatar": "assets/xuanjia-avatar.png",
   "colors": {
     "background": "#100D0E",
     "panel": "#171214",
