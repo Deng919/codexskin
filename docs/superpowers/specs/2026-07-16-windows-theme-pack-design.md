@@ -1,45 +1,47 @@
-# Windows Theme Pack Design
+# Windows 主题包设计规范
 
-## Goal
+## 目标
 
-Replace the Windows-only hard-coded Fiona skin with a data-driven theme package system, then ship `xuanjia-chijin` as the first complete theme using the user's red, black, and gold warrior artwork.
+将 Windows 版写死的 Fiona 皮肤改造成数据驱动的主题包系统，并使用用户提供的红黑赤金女将图片制作首个完整主题 `xuanjia-chijin`。
 
-## Theme Package
+主题只改变视觉表现，不修改、隐藏或新增任何 Codex 界面文案。
 
-Each theme lives under `windows/themes/<theme-id>/` and contains:
+## 主题包结构
 
-- `theme.json`: validated palette, image filenames, and layout tuning.
-- `hero.png`: the primary banner artwork.
-- `texture.png`: a low-contrast supporting texture for shell surfaces and decoration.
+每个主题存放在 `windows/themes/<theme-id>/`，包含：
 
-The initial schema is version 1. It contains `id`, `name`, `hero`, `texture`, `colors`, and `layout`. `name` is internal metadata only and is never rendered into Codex. Image fields must be basenames so themes cannot read outside their own directory.
+- `theme.json`：经过校验的配色、图片文件名和布局参数。
+- `hero.png`：顶部横幅主视觉。
+- `texture.png`：用于侧栏、主界面和装饰区域的低对比纹理。
 
-## Runtime Flow
+第一版规范使用 `schemaVersion: 1`，包含 `id`、`name`、`hero`、`texture`、`colors` 和 `layout`。`name` 仅作为内部元数据，不会显示在 Codex 界面中。所有图片字段必须是当前主题目录内的纯文件名，禁止通过相对路径读取目录外文件。
 
-`start-dream-skin.ps1` accepts an optional `-ThemeId` and otherwise reads `windows/active-theme.txt`. It resolves the theme under `windows/themes`, passes the directory to `injector.mjs`, and records the selected theme in runtime state.
+## 运行流程
 
-`injector.mjs` validates the schema, colors, image types, file sizes, and path containment. It embeds the theme JSON and both images as data URLs in the renderer payload. Invalid themes fail before renderer injection and do not fall back silently.
+`start-dream-skin.ps1` 增加可选参数 `-ThemeId`；未传参数时读取 `windows/active-theme.txt`。脚本只允许从 `windows/themes` 下解析主题目录，将目录传递给 `injector.mjs`，并把选中的主题记录到运行状态中。
 
-`renderer-inject.js` maps theme colors and layout values to CSS custom properties. It must not replace, hide, or supplement Codex interface copy. The existing native Codex controls and text remain untouched and interactive. Decorative elements remain text-free and `pointer-events: none`.
+`injector.mjs` 负责校验主题规范、颜色格式、图片类型、文件大小和路径边界。校验通过后，把主题 JSON 和两张图片编码为数据 URL，一并放入渲染器注入载荷。无效主题必须在注入前明确失败，不允许静默回退到其他主题。
 
-## Xuanjia Chijin Theme
+`renderer-inject.js` 只把主题颜色和布局参数映射为 CSS 自定义属性。它不得替换、隐藏或补充 Codex 界面文案。官方原生控件和文本保持不变并可正常交互；所有装饰层不包含文字，并保持 `pointer-events: none`。
 
-The theme uses charcoal black, oxblood red, dark crimson, antique gold, warm ivory, and cool steel gray. It removes all Fiona, heart, bow, pink, and purple references. It adds no replacement title, subtitle, tagline, status, quote, project label, or other visible copy.
+## 玄甲赤金主题
 
-The supplied warrior artwork remains the hero image. A generated supporting texture derives only the palette and material language: blackened metal, worn red lacquer, restrained gold linework, and drifting snow. It contains no person, text, logo, watermark, or visually dominant object.
+主题使用炭黑、暗酒红、深绯红、古金、暖白和冷钢灰。彻底移除 Fiona、爱心、蝴蝶结、粉色和紫色相关视觉元素，不添加新的标题、副标题、标语、状态文本、引用语或项目标签。
 
-## Compatibility And Recovery
+用户提供的女将图片作为顶部主视觉。根据原图的色彩和材质语言生成一张辅助纹理：黑化金属、磨损红漆、克制金色纹路和少量飘雪。辅助纹理中不得出现人物、文字、徽标、水印或抢夺视觉焦点的大型物体。
 
-- Keep loopback-only CDP behavior and do not modify the Store package or `app.asar`.
-- Preserve the existing config backup and restore shortcuts.
-- Preserve the original Fiona artwork as `windows/assets/dream-reference.fiona-original.png`.
-- Keep the current theme usable at 1280x720 through ultrawide desktop sizes without overflow.
-- A Codex DOM change must fail verification instead of reporting a successful theme load.
+## 兼容与恢复
 
-## Verification
+- 保持 CDP 仅监听本机回环地址，不修改 Store 安装包或 `app.asar`。
+- 保留现有配置备份与恢复快捷方式。
+- 原 Fiona 图片保存在 `windows/assets/dream-reference.fiona-original.png`。
+- 主题需覆盖从 `1280x720` 到超宽桌面分辨率，不能产生页面溢出。
+- Codex DOM 结构变化导致关键节点缺失时，验证必须失败，不能误报主题加载成功。
 
-- Parse-check all PowerShell and JavaScript files.
-- Unit-test theme validation with valid, invalid, traversal, missing-file, and oversized-file cases.
-- Launch an isolated Codex profile on loopback CDP.
-- Verify the injection marker, native sidebar, native composer, suggestion cards, pointer-event behavior, and no document overflow.
-- Capture and inspect desktop screenshots for native-text contrast, hero crop, decorative overlap, removal of Fiona/pink copy, and absence of newly injected visible copy.
+## 验证
+
+- 对全部 PowerShell 和 JavaScript 文件执行语法检查。
+- 为主题校验增加测试：有效主题、无效规范、路径穿越、文件缺失和文件过大。
+- 使用隔离 Codex 配置在本机回环 CDP 端口启动主题。
+- 验证注入标记、原生侧栏、原生输入框、建议卡、装饰层指针行为和页面无溢出。
+- 截图检查原生文字对比度、主图裁切、装饰遮挡、Fiona/粉紫元素清理情况，以及是否意外新增可见文案。
