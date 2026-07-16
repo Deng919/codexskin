@@ -343,6 +343,8 @@ git commit -m "feat(windows): mark home and task theme states"
 - Modify: `windows/tests/visual-contract.test.mjs`
 - Modify: `windows/assets/dream-skin.css`
 
+几何尺寸以仓库 `screenshot-macos-home.png` / `screenshot-macos-task.png` 为唯一权威；Cockpit 概念图只作为人物构图、玄铁/暗红/旧金材质和整体氛围参考。不得照搬概念图中过高的横幅、卡片或 composer。
+
 - [ ] **Step 1: 写 macOS 同构几何失败测试**
 
 ```js
@@ -400,7 +402,7 @@ Expected: FAIL，现有横幅/卡片/输入框仍为 `8px`，且存在 `dream-me
   position: absolute;
   inset: -18px -8px -20px 42%;
   z-index: 0;
-  background: var(--dream-character) right bottom / auto 132% no-repeat;
+  background: var(--dream-character) right bottom / auto 108% no-repeat;
   pointer-events: none;
 }
 
@@ -422,16 +424,16 @@ html.codex-dream-skin .composer-surface-chrome {
 
 html.codex-dream-skin main.main-surface.dream-task-shell {
   background:
-    linear-gradient(90deg, rgba(6, 9, 12, .97) 0%, rgba(9, 12, 15, .89) 55%, rgba(13, 13, 15, .52) 100%),
-    var(--dream-character) right -5vw bottom -8vh / auto 96% no-repeat,
+    linear-gradient(90deg, rgba(6, 9, 12, .97) 0%, rgba(9, 12, 15, .91) 55%, rgba(13, 13, 15, .68) 100%),
+    var(--dream-character) right -7vw bottom -6vh / auto 88% no-repeat,
     var(--dream-hero) center / cover no-repeat !important;
 }
 
 html.codex-dream-skin main.main-surface.dream-task-shell article {
-  border: 1px solid rgba(183, 139, 76, .09);
-  background: rgba(10, 13, 16, .30);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, .12);
-  backdrop-filter: blur(7px) saturate(106%);
+  border: 0;
+  background: rgba(10, 13, 16, .18);
+  box-shadow: none;
+  backdrop-filter: blur(5px) saturate(104%);
 }
 
 .dream-avatar {
@@ -448,9 +450,35 @@ html.codex-dream-skin main.main-surface.dream-task-shell article {
 }
 
 #codex-dream-skin-chrome.dream-home-shell .dream-avatar { display: block; }
+
+@media (max-width: 1120px) {
+  .dream-home > div:first-child > div:first-child > div:first-child {
+    height: 238px !important;
+    min-height: 238px !important;
+  }
+  .dream-home > div:first-child > div:first-child > div:first-child::after {
+    inset: -8px -24px -8px 44%;
+    background-size: auto 106%;
+  }
+  .dream-home > div:first-child > div:first-child > div:first-child > div:first-child > div:first-child {
+    width: 58% !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dream-home > div:first-child > div:first-child > div:first-child {
+    height: 224px !important;
+    min-height: 224px !important;
+  }
+  .dream-home > div:first-child > div:first-child > div:first-child::after {
+    inset: 0 -42px -6px 48%;
+    background-size: auto 102%;
+  }
+  .dream-home [data-feature="game-source"] { font-size: 23px !important; }
+}
 ```
 
-侧栏、顶栏、图标环、项目选择、按钮和滚动条使用同一玄铁/暗红/旧金变量；删除金属大框、雪点和所有硬编码装饰文案。媒体查询在 `1120px` 和 `900px` 调整人物 `background-size`、横幅高度和标题宽度，先保头冠/脸/双肩。
+侧栏、顶栏、图标环、项目选择、按钮和滚动条使用同一玄铁/暗红/旧金变量；删除金属大框、雪点和所有硬编码装饰文案。composer 只改材质、边框和圆角，不覆盖原生高度。媒体查询按上面的确定数值调整人物和横幅，先保头冠、脸和双肩。
 
 - [ ] **Step 4: 运行视觉契约测试**
 
