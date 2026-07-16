@@ -62,10 +62,25 @@ test("decorative chrome cannot intercept native Codex controls", async () => {
   assert.match(css, /#codex-dream-skin-chrome\s*\{[^}]*pointer-events:\s*none/s);
 });
 
-test("xuanjia hero crop keeps the crown and face inside the banner", async () => {
+test("skin follows the approved home and task geometry", async () => {
+  const css = await read("assets/dream-skin.css");
+
+  assert.match(css, /height:\s*252px/);
+  assert.match(css, /border-radius:\s*24px/);
+  assert.match(css, /min-height:\s*126px/);
+  assert.match(css, /border-radius:\s*21px/);
+  assert.match(css, /composer-surface-chrome[\s\S]{0,500}border-radius:\s*23px/);
+  assert.match(css, /main\.main-surface\.dream-task-shell/);
+  assert.match(css, /var\(--dream-character\)/);
+  assert.match(css, /\.dream-avatar/);
+  assert.doesNotMatch(css, /dream-metal-frame|dream-snow/);
+  assert.doesNotMatch(css, /content:\s*["'][^"']+["']/);
+});
+
+test("xuanjia scene centers the battlefield behind the character layer", async () => {
   const config = JSON.parse(await read("themes/xuanjia-chijin/theme.json"));
 
-  assert.equal(config.layout.heroPosition, "58% 0%");
+  assert.equal(config.layout.heroPosition, "50% 50%");
 });
 
 test("installer selects a dark neutral base theme instead of the old pink chrome", async () => {

@@ -19,7 +19,7 @@
   },
   "layout": {
     "heroSize": "cover",
-    "heroPosition": "58% 0%",
+    "heroPosition": "50% 50%",
     "heroOverlayStrength": 0.72,
     "textureOpacity": 0.12
   }
