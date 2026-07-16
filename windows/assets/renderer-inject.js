@@ -2,7 +2,7 @@
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
   const CHROME_ID = "codex-dream-skin-chrome";
-  const VERSION = "2.0.0";
+  const VERSION = "3.0.0";
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const THEME_VARIABLES = [
     "--theme-background", "--theme-panel", "--theme-panel-alt", "--theme-accent",
@@ -88,16 +88,17 @@
     if (home) home.classList.add("dream-home");
 
     if (!shellMain || !document.body) return;
+    const contentMain = shellMain.querySelector('[role="main"]') || document.querySelector('[role="main"]');
+    const task = !home && Boolean(contentMain);
     shellMain.classList.toggle("dream-home-shell", Boolean(home));
+    shellMain.classList.toggle("dream-task-shell", task);
     let chrome = document.getElementById(CHROME_ID);
     if (!chrome || chrome.parentElement !== document.body) {
       chrome?.remove();
       chrome = document.createElement("div");
       chrome.id = CHROME_ID;
       chrome.setAttribute("aria-hidden", "true");
-      chrome.innerHTML = `
-        <div class="dream-metal-frame"><i></i><i></i><i></i><i></i></div>
-        <div class="dream-snow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>`;
+      chrome.innerHTML = '<div class="dream-avatar"></div>';
       document.body.appendChild(chrome);
     }
     const shellBox = shellMain.getBoundingClientRect();
@@ -106,6 +107,7 @@
     chrome.style.width = `${Math.round(shellBox.width)}px`;
     chrome.style.height = `${Math.round(shellBox.height)}px`;
     chrome.classList.toggle("dream-home-shell", Boolean(home));
+    chrome.classList.toggle("dream-task-shell", task);
   };
 
   const cleanup = () => {
@@ -114,6 +116,7 @@
     for (const name of THEME_VARIABLES) document.documentElement?.style.removeProperty(name);
     document.querySelectorAll(".dream-home").forEach((node) => node.classList.remove("dream-home"));
     document.querySelectorAll(".dream-home-shell").forEach((node) => node.classList.remove("dream-home-shell"));
+    document.querySelectorAll(".dream-task-shell").forEach((node) => node.classList.remove("dream-task-shell"));
     document.getElementById(STYLE_ID)?.remove();
     document.getElementById(CHROME_ID)?.remove();
     const state = window[STATE_KEY];

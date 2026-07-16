@@ -19,6 +19,16 @@ test("renderer injects no visible theme copy", async () => {
   assert.doesNotMatch(renderer, /innerHTML\s*=\s*`[^`]*<(?:b|small|span)[^>]*>[^<]+/s);
 });
 
+test("renderer marks home and task shells with avatar-only chrome", async () => {
+  const renderer = await read("assets/renderer-inject.js");
+
+  assert.match(renderer, /dream-home-shell/);
+  assert.match(renderer, /dream-task-shell/);
+  assert.match(renderer, /dream-avatar/);
+  assert.doesNotMatch(renderer, /dream-metal-frame|dream-snow/);
+  assert.doesNotMatch(renderer, /textContent\s*=\s*THEME/);
+});
+
 test("renderer maps visual theme data to CSS variables", async () => {
   const renderer = await read("assets/renderer-inject.js");
 
