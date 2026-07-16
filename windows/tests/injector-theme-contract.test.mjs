@@ -34,6 +34,15 @@ test("start script resolves the active theme and forwards it to every injector c
   assert.match(start, /themeId\s*=\s*\$ThemeId/);
 });
 
+test("start script launches the Store package through app activation", async () => {
+  const start = await read("scripts/start-dream-skin.ps1");
+
+  assert.match(start, /IApplicationActivationManager/);
+  assert.match(start, /ActivateApplication/);
+  assert.match(start, /PackageFamilyName/);
+  assert.doesNotMatch(start, /Start-Process\s+-FilePath\s+\$exe/);
+});
+
 test("installer shortcuts preserve the selected active theme behavior", async () => {
   const install = await read("scripts/install-dream-skin.ps1");
 
@@ -51,6 +60,13 @@ test("injector fallback removal clears the new theme assets", async () => {
   assert.match(injector, /themeId:\s*window\.__CODEX_DREAM_SKIN_STATE__/);
 });
 
+test("renderer recognizes current Codex task timelines without a main role", async () => {
+  const renderer = await read("assets/renderer-inject.js");
+
+  assert.match(renderer, /data-app-action-timeline-scroll/);
+  assert.match(renderer, /dream-task-shell/);
+});
+
 test("verifier supports task state and an explicit screenshot viewport", async () => {
   const injector = await read("scripts/injector.mjs");
   const verify = await read("scripts/verify-dream-skin.ps1");
@@ -60,4 +76,12 @@ test("verifier supports task state and an explicit screenshot viewport", async (
   assert.match(injector, /Emulation\.setDeviceMetricsOverride/);
   assert.match(verify, /\[string\]\$Viewport/);
   assert.match(verify, /--viewport/);
+});
+
+test("one-shot verification ignores the auxiliary avatar overlay", async () => {
+  const injector = await read("scripts/injector.mjs");
+
+  assert.match(injector, /isAuxiliaryTarget/);
+  assert.match(injector, /avatar-overlay/);
+  assert.match(injector, /filter\(\(target\) => !isAuxiliaryTarget\(target\)\)/);
 });

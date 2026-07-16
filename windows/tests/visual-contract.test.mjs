@@ -71,6 +71,8 @@ test("skin follows the approved home and task geometry", async () => {
   assert.match(css, /border-radius:\s*21px/);
   assert.match(css, /composer-surface-chrome[\s\S]{0,500}border-radius:\s*23px/);
   assert.match(css, /main\.main-surface\.dream-task-shell/);
+  assert.match(css, /dream-task-shell \[data-app-action-timeline-scroll\]/);
+  assert.doesNotMatch(css, /dream-task-shell \[role="main"\]/);
   assert.match(css, /var\(--dream-character\)/);
   assert.match(css, /\.dream-avatar/);
   assert.doesNotMatch(css, /dream-metal-frame|dream-snow/);

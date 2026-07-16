@@ -263,8 +263,21 @@ async function capture(session, outputPath, requestedViewport) {
   await fs.writeFile(outputPath, Buffer.from(result.data, "base64"));
 }
 
+function isAuxiliaryTarget(target) {
+  try {
+    const targetUrl = new URL(target.url);
+    return targetUrl.searchParams.get("initialRoute") === "/avatar-overlay";
+  } catch {
+    return false;
+  }
+}
+
 async function runOneShot(options) {
-  const targets = await waitForTargets(options.port, options.timeoutMs);
+  const discoveredTargets = await waitForTargets(options.port, options.timeoutMs);
+  const targets = (options.mode === "verify" || options.screenshot)
+    ? discoveredTargets.filter((target) => !isAuxiliaryTarget(target))
+    : discoveredTargets;
+  if (!targets.length) throw new Error(`No primary Codex renderer target on 127.0.0.1:${options.port}`);
   const payload = (options.mode === "once" || options.reload) ? await loadPayload(options.themeDir) : null;
   const results = [];
   for (const target of targets) {

@@ -39,6 +39,95 @@ function Test-CodexDebugPort([int]$CandidatePort) {
   }
 }
 
+function Start-CodexStorePackage([object]$Package, [string[]]$Arguments) {
+  if (-not ('CodexDreamSkin.PackageLauncher' -as [type])) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
+
+namespace CodexDreamSkin
+{
+    [Flags]
+    internal enum ActivateOptions
+    {
+        None = 0
+    }
+
+    [ComImport]
+    [Guid("2E941141-7F97-4756-BA1D-9DECDE894A3D")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal interface IApplicationActivationManager
+    {
+        [PreserveSig]
+        int ActivateApplication(
+            [MarshalAs(UnmanagedType.LPWStr)] string appUserModelId,
+            [MarshalAs(UnmanagedType.LPWStr)] string arguments,
+            ActivateOptions options,
+            out uint processId);
+    }
+
+    [ComImport]
+    [Guid("45BA127D-10A8-46EA-8AB7-56EA9078943C")]
+    internal class ApplicationActivationManager
+    {
+    }
+
+    public static class PackageLauncher
+    {
+        private static string QuoteArgument(string value)
+        {
+            if (value.Length > 0 && value.IndexOfAny(new[] { ' ', '\t', '\n', '\v', '"' }) < 0)
+            {
+                return value;
+            }
+
+            var result = new StringBuilder("\"");
+            var backslashes = 0;
+            foreach (var character in value)
+            {
+                if (character == '\\')
+                {
+                    backslashes++;
+                    continue;
+                }
+
+                if (character == '"')
+                {
+                    result.Append('\\', (backslashes * 2) + 1);
+                    result.Append('"');
+                    backslashes = 0;
+                    continue;
+                }
+
+                result.Append('\\', backslashes);
+                backslashes = 0;
+                result.Append(character);
+            }
+
+            result.Append('\\', backslashes * 2);
+            result.Append('"');
+            return result.ToString();
+        }
+
+        public static uint ActivateApplication(string appUserModelId, string[] arguments)
+        {
+            var commandLine = string.Join(" ", Array.ConvertAll(arguments, QuoteArgument));
+            var manager = (IApplicationActivationManager)new ApplicationActivationManager();
+            uint processId;
+            var result = manager.ActivateApplication(appUserModelId, commandLine, ActivateOptions.None, out processId);
+            Marshal.ThrowExceptionForHR(result);
+            return processId;
+        }
+    }
+}
+'@
+  }
+
+  $appUserModelId = "$($Package.PackageFamilyName)!App"
+  return [CodexDreamSkin.PackageLauncher]::ActivateApplication($appUserModelId, $Arguments)
+}
+
 $node = (Get-Command node -ErrorAction Stop).Source
 $debugReady = Test-CodexDebugPort $Port
 $mainProcesses = @(Get-Process ChatGPT -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 })
@@ -56,14 +145,12 @@ if (-not $debugReady -and -not $ProfilePath -and $mainProcesses.Count -gt 0) {
 if (-not (Test-CodexDebugPort $Port)) {
   $package = Get-AppxPackage OpenAI.Codex | Sort-Object Version -Descending | Select-Object -First 1
   if (-not $package) { throw 'The OpenAI.Codex Store package is not installed.' }
-  $exe = Join-Path $package.InstallLocation 'app\ChatGPT.exe'
-  if (-not (Test-Path -LiteralPath $exe)) { throw "Codex executable not found: $exe" }
   $arguments = @("--remote-debugging-port=$Port")
   if ($ProfilePath) {
     New-Item -ItemType Directory -Force -Path $ProfilePath | Out-Null
     $arguments += "--user-data-dir=$ProfilePath"
   }
-  Start-Process -FilePath $exe -ArgumentList $arguments
+  [void](Start-CodexStorePackage -Package $package -Arguments $arguments)
 }
 
 $deadline = (Get-Date).AddSeconds(30)

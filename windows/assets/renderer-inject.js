@@ -2,7 +2,7 @@
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
   const CHROME_ID = "codex-dream-skin-chrome";
-  const VERSION = "3.0.0";
+  const VERSION = "3.0.1";
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const THEME_VARIABLES = [
     "--theme-background", "--theme-panel", "--theme-panel-alt", "--theme-accent",
@@ -88,8 +88,8 @@
     if (home) home.classList.add("dream-home");
 
     if (!shellMain || !document.body) return;
-    const contentMain = shellMain.querySelector('[role="main"]') || document.querySelector('[role="main"]');
-    const task = !home && Boolean(contentMain);
+    const taskTimeline = shellMain.querySelector('[data-app-action-timeline-scroll]');
+    const task = !home && Boolean(taskTimeline);
     shellMain.classList.toggle("dream-home-shell", Boolean(home));
     shellMain.classList.toggle("dream-task-shell", task);
     let chrome = document.getElementById(CHROME_ID);
