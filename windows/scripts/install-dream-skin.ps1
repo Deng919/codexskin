@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
   [int]$Port = 9335,
+  [string]$ThemeId,
   [switch]$NoShortcuts
 )
 
@@ -8,6 +9,12 @@ $ErrorActionPreference = 'Stop'
 $SkillRoot = Split-Path -Parent $PSScriptRoot
 $StateRoot = Join-Path $env:LOCALAPPDATA 'CodexDreamSkin'
 New-Item -ItemType Directory -Force -Path $StateRoot | Out-Null
+$ActiveThemePath = Join-Path $SkillRoot 'active-theme.txt'
+if ([string]::IsNullOrWhiteSpace($ThemeId)) {
+  if (-not (Test-Path -LiteralPath $ActiveThemePath)) { throw "Active theme file not found: $ActiveThemePath" }
+  $ThemeId = (Get-Content -LiteralPath $ActiveThemePath -Raw).Trim()
+}
+if ($ThemeId -notmatch '^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$') { throw "Invalid theme id: $ThemeId" }
 $ConfigPath = Join-Path $HOME '.codex\config.toml'
 $BackupPath = Join-Path $StateRoot 'config.before-dream-skin.toml'
 if (-not (Test-Path -LiteralPath $ConfigPath)) { throw "Codex config not found: $ConfigPath" }
@@ -43,7 +50,7 @@ if (-not $NoShortcuts) {
   foreach ($folder in @($desktop, $startMenu)) {
     $shortcut = $shell.CreateShortcut((Join-Path $folder 'Codex Dream Skin.lnk'))
     $shortcut.TargetPath = $powershell
-    $shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$startScript`" -Port $Port -RestartExisting"
+    $shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$startScript`" -Port $Port -ThemeId `"$ThemeId`" -RestartExisting"
     $shortcut.WorkingDirectory = $SkillRoot
     $shortcut.Description = 'Launch Codex with the Dream/Fiona full interface skin'
     $shortcut.Save()

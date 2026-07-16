@@ -1,12 +1,20 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildThemePayload } from "./theme-loader.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 
 function parseArgs(argv) {
-  const options = { port: 9335, mode: "watch", timeoutMs: 30000, screenshot: null, reload: false };
+  const options = {
+    port: 9335,
+    mode: "watch",
+    timeoutMs: 30000,
+    screenshot: null,
+    reload: false,
+    themeDir: null,
+  };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--port") options.port = Number(argv[++i]);
@@ -17,10 +25,14 @@ function parseArgs(argv) {
     else if (arg === "--timeout-ms") options.timeoutMs = Number(argv[++i]);
     else if (arg === "--screenshot") options.screenshot = path.resolve(argv[++i]);
     else if (arg === "--reload") options.reload = true;
+    else if (arg === "--theme-dir") options.themeDir = path.resolve(argv[++i]);
     else throw new Error(`Unknown argument: ${arg}`);
   }
   if (!Number.isInteger(options.port) || options.port < 1024 || options.port > 65535) {
     throw new Error(`Invalid port: ${options.port}`);
+  }
+  if (["watch", "once"].includes(options.mode) && !options.themeDir) {
+    throw new Error("--theme-dir is required when applying a theme");
   }
   return options;
 }
@@ -117,16 +129,17 @@ async function waitForTargets(port, timeoutMs) {
   throw new Error(`No Codex renderer target on 127.0.0.1:${port}: ${lastError?.message ?? "timed out"}`);
 }
 
-async function loadPayload() {
-  const [css, template, art] = await Promise.all([
+async function loadPayload(themeDir) {
+  const [css, template, themePayload] = await Promise.all([
     fs.readFile(path.join(root, "assets", "dream-skin.css"), "utf8"),
     fs.readFile(path.join(root, "assets", "renderer-inject.js"), "utf8"),
-    fs.readFile(path.join(root, "assets", "dream-reference.png")),
+    buildThemePayload(themeDir),
   ]);
-  const artDataUrl = `data:image/png;base64,${art.toString("base64")}`;
   return template
     .replace("__DREAM_CSS_JSON__", JSON.stringify(css))
-    .replace("__DREAM_ART_JSON__", JSON.stringify(artDataUrl));
+    .replace("__DREAM_HERO_JSON__", JSON.stringify(themePayload.heroDataUrl))
+    .replace("__DREAM_TEXTURE_JSON__", JSON.stringify(themePayload.textureDataUrl))
+    .replace("__DREAM_THEME_JSON__", JSON.stringify(themePayload.theme));
 }
 
 async function connectTarget(target) {
@@ -219,7 +232,7 @@ async function capture(session, outputPath) {
 
 async function runOneShot(options) {
   const targets = await waitForTargets(options.port, options.timeoutMs);
-  const payload = (options.mode === "once" || options.reload) ? await loadPayload() : null;
+  const payload = (options.mode === "once" || options.reload) ? await loadPayload(options.themeDir) : null;
   const results = [];
   for (const target of targets) {
     const session = await connectTarget(target);
@@ -250,7 +263,7 @@ async function runOneShot(options) {
 }
 
 async function runWatch(options) {
-  const payload = await loadPayload();
+  const payload = await loadPayload(options.themeDir);
   const sessions = new Map();
   let stopping = false;
   const stop = () => { stopping = true; };

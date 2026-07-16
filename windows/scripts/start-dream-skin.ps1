@@ -3,6 +3,7 @@ param(
   [int]$Port = 9335,
   [switch]$RestartExisting,
   [string]$ProfilePath,
+  [string]$ThemeId,
   [switch]$ForegroundInjector
 )
 
@@ -14,6 +15,20 @@ $StatePath = Join-Path $StateRoot 'state.json'
 $StdoutPath = Join-Path $StateRoot 'injector.log'
 $StderrPath = Join-Path $StateRoot 'injector-error.log'
 New-Item -ItemType Directory -Force -Path $StateRoot | Out-Null
+
+$ThemeRoot = Join-Path $SkillRoot 'themes'
+$ActiveThemePath = Join-Path $SkillRoot 'active-theme.txt'
+if ([string]::IsNullOrWhiteSpace($ThemeId)) {
+  if (-not (Test-Path -LiteralPath $ActiveThemePath)) { throw "Active theme file not found: $ActiveThemePath" }
+  $ThemeId = (Get-Content -LiteralPath $ActiveThemePath -Raw).Trim()
+}
+if ($ThemeId -notmatch '^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$') { throw "Invalid theme id: $ThemeId" }
+$ThemeRootFull = [System.IO.Path]::GetFullPath($ThemeRoot)
+$ThemeDir = [System.IO.Path]::GetFullPath((Join-Path $ThemeRootFull $ThemeId))
+if (-not $ThemeDir.StartsWith($ThemeRootFull + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+  throw "Theme path escaped the theme root: $ThemeDir"
+}
+if (-not (Test-Path -LiteralPath (Join-Path $ThemeDir 'theme.json'))) { throw "Theme not found: $ThemeId" }
 
 function Test-CodexDebugPort([int]$CandidatePort) {
   try {
@@ -65,11 +80,11 @@ if (Test-Path -LiteralPath $StatePath) {
 }
 
 if ($ForegroundInjector) {
-  & $node $Injector --watch --port $Port
+  & $node $Injector --watch --port $Port --theme-dir $ThemeDir
   exit $LASTEXITCODE
 }
 
-$injectorArgs = @("`"$Injector`"", '--watch', '--port', "$Port")
+$injectorArgs = @("`"$Injector`"", '--watch', '--port', "$Port", '--theme-dir', "`"$ThemeDir`"")
 $daemon = Start-Process -FilePath $node -ArgumentList $injectorArgs -WindowStyle Hidden -PassThru -RedirectStandardOutput $StdoutPath -RedirectStandardError $StderrPath
 @{
   port = $Port
@@ -77,12 +92,14 @@ $daemon = Start-Process -FilePath $node -ArgumentList $injectorArgs -WindowStyle
   startedAt = (Get-Date).ToString('o')
   skillRoot = $SkillRoot
   profilePath = $ProfilePath
+  themeId = $ThemeId
+  themeDir = $ThemeDir
 } | ConvertTo-Json | Set-Content -LiteralPath $StatePath -Encoding utf8
 
 $verified = $false
 for ($attempt = 0; $attempt -lt 45; $attempt++) {
   Start-Sleep -Milliseconds 700
-  & $node $Injector --verify --port $Port *> $null
+  & $node $Injector --verify --port $Port --theme-dir $ThemeDir *> $null
   if ($LASTEXITCODE -eq 0) { $verified = $true; break }
 }
 if (-not $verified) { throw 'Dream skin launched but verification failed. See injector logs.' }
