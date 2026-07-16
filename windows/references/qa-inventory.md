@@ -1,33 +1,66 @@
-# QA inventory
+# 玄甲赤金 QA 清单
 
-## User-visible claims
+## 用户可见承诺
 
-1. The home screen visibly matches the reference mood: one cropped pink-purple starry hero, Fiona portrait crop, signature/brand treatment, native Codex suggestion cards, polaroid, and skinned native composer.
-2. The sidebar is blush glass rather than merely changing the accent color.
-3. All real Codex controls remain interactive; the skin is not a screenshot overlay.
-4. The skin survives route changes and renderer reloads while the injector daemon runs.
-5. The official Store package and `app.asar` remain unchanged.
-6. Restore removes the injected DOM/CSS and install/restore can be repeated.
+1. 首页沿用仓库 macOS 示例的几何节奏：一张 `252px` 主横幅、原生建议卡、原生项目选择和原生 composer。
+2. 人物由透明前景层渲染，脸、完整头冠、双肩和龙纹肩甲可见；场景底图中不重复人物。
+3. 任务页使用固定战场场景与右侧人物背景，正文和命令输出优先可读。
+4. 主题不新增、替换、隐藏或改写 Codex 原生文案。
+5. 头像只作为首页主题 chrome 的无语义装饰，不替换账户头像、模型图标或项目图标。
+6. 所有装饰层 `pointer-events: none`，真实 Codex 控件保持可交互。
+7. Store 安装包、签名、`WindowsApps` 和 `app.asar` 保持不变；主题可实时移除并重新注入。
 
-## Functional checks
+## 静态验证
 
-- Home feature card: click one card and confirm the real composer is populated or the normal action occurs.
-- Project selector: click the real project chip under the "选择项目" label and confirm the native project menu opens.
-- Sidebar: open a real task, then return to New Task.
-- Composer: type text, verify caret/readability, then clear it without sending.
-- Reload: use CDP `Page.reload`, wait, and confirm the injection marker returns.
-- Restore/reapply cycle: remove live skin, verify marker absent, apply again, verify marker present.
-- Update resilience: resolve the current `OpenAI.Codex` Appx location dynamically; never store a versioned WindowsApps path.
+- `node --test windows/tests/*.test.mjs` 全部通过。
+- `test_xuanjia_assets.py` 全部通过。
+- `renderer-inject.js` 和 `injector.mjs` 通过 `node --check`。
+- PowerShell 脚本解析错误数为 0。
+- `git diff --check` 无输出。
+- `theme.json` 的 hero、texture、character、avatar 均在主题目录内且小于 16 MiB。
 
-## Visual checks
+## 首页视觉检查
 
-- 1280x820 initial home: hero, four native cards, real project selector, and composer are all visible without horizontal scrolling.
-- Narrower window: accept Codex's native responsive reduction to two or three suggestion cards; no essential control is covered and the polaroid may intentionally hide.
-- Normal task: messages remain readable and composer does not overlap content.
-- Inspect the sidebar, header, hero edges, card labels, composer controls, scrollbar, ribbon, and bottom-right decoration.
-- Reject black/transparent sidebar artifacts, clipped cards, duplicated/disconnected project labels, rasterized native controls, weak contrast, or decorations intercepting clicks.
+分别检查 `1280x720`、`1600x900`、`1920x1080`：
 
-## Exploratory checks
+- 横幅高度和圆角接近仓库 macOS 示例，不膨胀成营销页 hero。
+- 人物脸、头冠和双肩完整可见，文字不覆盖脸部和头冠。
+- 无人物场景与透明人物之间没有重复轮廓、棋盘格、白边或明显接缝。
+- 原生标题、项目按钮、建议卡文字和 composer 内容保持原样。
+- 建议卡为 2 至 4 张原生响应式卡片，无裁切、跳高或横向溢出。
+- 建议卡、项目选择区与 composer 使用同一玄铁、暗红和旧金材质。
+- 头像位于主内容 chrome，不遮挡顶部原生控件。
+- 侧栏没有纯黑断层，选中态和滚动条可见但不抢焦点。
 
-- Start when the debug port is occupied: fail with a clear message or use a caller-selected port.
-- Start after Codex updates: package discovery and injection still work without patching installed files.
+## 任务页视觉检查
+
+- 人物位于右侧背景，亮度和饱和度低于正文，不随消息滚动。
+- 左侧阅读区有稳定遮罩；正文、代码、命令、时间戳和状态清楚可读。
+- 普通消息不被统一包成厚重卡片；命令和代码块仍保留原生边界。
+- composer 保持原生高度和控件排列，只改变材质与边框。
+- 右侧环境信息面板、弹出菜单和附件预览不被背景或人物遮挡。
+- 雪点只属于场景图本身，不存在覆盖整个 UI 的独立粒子层。
+
+## 功能检查
+
+- 点击建议卡，确认原生动作或 composer 填充正常。
+- 打开项目选择器，确认菜单位置和点击区域正常。
+- 在 composer 输入并清除文本，确认光标、占位符和焦点环可读。
+- 打开模型、审批和其他下拉菜单，确认层级高于主题装饰。
+- 从首页进入普通任务，再返回首页，确认 `dream-home-shell` / `dream-task-shell` 正确切换。
+- CDP `Page.reload` 后主题自动恢复，且不重复创建 chrome。
+
+## 回退检查
+
+- `--remove` 后移除 `codex-dream-skin`、首页/任务页类、style、chrome 和四个图片变量。
+- 重新 `--once` 后只创建一个 style 与一个 chrome。
+- 回退和重注入不影响线程、项目、插件、登录状态或用户配置。
+
+## 拒收条件
+
+- 人物脸、头冠或肩甲被裁掉。
+- 首页比例明显高于仓库参考，或 composer 被强制拉高。
+- 任务页人物与正文争夺注意力。
+- 出现主题名称、标语、状态短语、装饰文字或被改写的原生文案。
+- 出现重复人物、透明棋盘格、白边、破图、厚重大黑框或全屏红光。
+- 装饰层拦截点击、菜单被遮挡、横向滚动或组件重叠。

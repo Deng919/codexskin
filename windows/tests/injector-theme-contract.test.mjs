@@ -50,3 +50,14 @@ test("injector fallback removal clears the new theme assets", async () => {
   assert.match(injector, /removeProperty\('--dream-avatar'\)/);
   assert.match(injector, /themeId:\s*window\.__CODEX_DREAM_SKIN_STATE__/);
 });
+
+test("verifier supports task state and an explicit screenshot viewport", async () => {
+  const injector = await read("scripts/injector.mjs");
+  const verify = await read("scripts/verify-dream-skin.ps1");
+
+  assert.match(injector, /--viewport/);
+  assert.match(injector, /taskPresent/);
+  assert.match(injector, /Emulation\.setDeviceMetricsOverride/);
+  assert.match(verify, /\[string\]\$Viewport/);
+  assert.match(verify, /--viewport/);
+});

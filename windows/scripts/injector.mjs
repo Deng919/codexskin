@@ -12,6 +12,7 @@ function parseArgs(argv) {
     mode: "watch",
     timeoutMs: 30000,
     screenshot: null,
+    viewport: null,
     reload: false,
     themeDir: null,
   };
@@ -24,12 +25,24 @@ function parseArgs(argv) {
     else if (arg === "--remove") options.mode = "remove";
     else if (arg === "--timeout-ms") options.timeoutMs = Number(argv[++i]);
     else if (arg === "--screenshot") options.screenshot = path.resolve(argv[++i]);
+    else if (arg === "--viewport") {
+      const value = argv[++i] ?? "";
+      const match = /^(\d{3,4})x(\d{3,4})$/i.exec(value);
+      if (!match) throw new Error(`Invalid viewport: ${value}`);
+      options.viewport = { width: Number(match[1]), height: Number(match[2]) };
+    }
     else if (arg === "--reload") options.reload = true;
     else if (arg === "--theme-dir") options.themeDir = path.resolve(argv[++i]);
     else throw new Error(`Unknown argument: ${arg}`);
   }
   if (!Number.isInteger(options.port) || options.port < 1024 || options.port > 65535) {
     throw new Error(`Invalid port: ${options.port}`);
+  }
+  if (options.viewport && (
+    options.viewport.width < 800 || options.viewport.width > 3840 ||
+    options.viewport.height < 600 || options.viewport.height > 2160
+  )) {
+    throw new Error(`Viewport is out of range: ${options.viewport.width}x${options.viewport.height}`);
   }
   if (["watch", "once"].includes(options.mode) && !options.themeDir) {
     throw new Error("--theme-dir is required when applying a theme");
@@ -176,6 +189,7 @@ async function verifySession(session) {
       return { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) };
     };
     const home = document.querySelector('.dream-home');
+    const task = document.querySelector('main.main-surface.dream-task-shell');
     const suggestions = home?.querySelector('.group\\\\/home-suggestions') ?? null;
     const cards = suggestions ? [...suggestions.querySelectorAll('button')].map(box) : [];
     const result = {
@@ -186,6 +200,8 @@ async function verifySession(session) {
       chromePresent: Boolean(document.getElementById('codex-dream-skin-chrome')),
       chromePointerEvents: getComputedStyle(document.getElementById('codex-dream-skin-chrome') || document.body).pointerEvents,
       homePresent: Boolean(home),
+      taskPresent: Boolean(task),
+      avatarPresent: Boolean(document.querySelector('#codex-dream-skin-chrome .dream-avatar')),
       suggestionsPresent: Boolean(suggestions),
       hero: box(home?.firstElementChild?.firstElementChild?.firstElementChild),
       cards,
@@ -197,10 +213,12 @@ async function verifySession(session) {
         y: document.documentElement.scrollHeight > document.documentElement.clientHeight,
       },
     };
+    const homePass = result.homePresent && Boolean(result.hero) && result.avatarPresent &&
+      (!result.suggestionsPresent || (result.cards.length >= 2 && result.cards.length <= 4));
+    const taskPass = result.taskPresent;
     result.pass = result.installed && result.stylePresent && result.chromePresent &&
       result.chromePointerEvents === 'none' && Boolean(result.composer) && Boolean(result.sidebar) &&
-      (!result.homePresent || (Boolean(result.hero) &&
-        (!result.suggestionsPresent || (result.cards.length >= 2 && result.cards.length <= 4))));
+      (homePass || taskPass);
     return result;
   })()`);
 }
@@ -216,8 +234,17 @@ async function waitForVerifiedSession(session, timeoutMs) {
   return lastResult;
 }
 
-async function capture(session, outputPath) {
+async function capture(session, outputPath, requestedViewport) {
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  if (requestedViewport) {
+    await session.send("Emulation.setDeviceMetricsOverride", {
+      width: requestedViewport.width,
+      height: requestedViewport.height,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 350));
+  }
   await session.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
   await session.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
   const viewport = await session.evaluate("({ width: innerWidth, height: innerHeight })");
@@ -259,7 +286,7 @@ async function runOneShot(options) {
           ? await waitForVerifiedSession(session, options.timeoutMs)
           : await verifySession(session);
       results.push({ targetId: target.id, title: target.title, url: target.url, result: verified });
-      if (options.screenshot) await capture(session, options.screenshot);
+      if (options.screenshot) await capture(session, options.screenshot, options.viewport);
     } finally {
       session.close();
     }
