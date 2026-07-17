@@ -311,6 +311,7 @@ async function runOneShot(options) {
 async function runWatch(options) {
   const payload = await loadPayload(options.themeDir);
   const sessions = new Map();
+  const cleanedAuxiliaryIds = new Set();
   let stopping = false;
   const stop = () => { stopping = true; };
   process.on("SIGINT", stop);
@@ -326,7 +327,29 @@ async function runWatch(options) {
       continue;
     }
 
-    const activeIds = new Set(targets.map((target) => target.id));
+    const allActiveIds = new Set(targets.map((target) => target.id));
+    for (const id of cleanedAuxiliaryIds) {
+      if (!allActiveIds.has(id)) cleanedAuxiliaryIds.delete(id);
+    }
+
+    const auxiliaryTargets = targets.filter(isAuxiliaryTarget);
+    for (const target of auxiliaryTargets) {
+      if (cleanedAuxiliaryIds.has(target.id)) continue;
+      let auxiliarySession;
+      try {
+        auxiliarySession = await connectTarget(target);
+        await removeFromSession(auxiliarySession);
+        cleanedAuxiliaryIds.add(target.id);
+        console.log(`[dream-skin] cleaned auxiliary target ${target.id} (${target.url})`);
+      } catch (error) {
+        console.error(`[dream-skin] auxiliary cleanup failed for ${target.id}: ${error.message}`);
+      } finally {
+        auxiliarySession?.close();
+      }
+    }
+
+    const primaryTargets = targets.filter((target) => !isAuxiliaryTarget(target));
+    const activeIds = new Set(primaryTargets.map((target) => target.id));
     for (const [id, session] of sessions) {
       if (!activeIds.has(id) || session.closed) {
         session.close();
@@ -334,7 +357,7 @@ async function runWatch(options) {
       }
     }
 
-    for (const target of targets) {
+    for (const target of primaryTargets) {
       if (sessions.has(target.id)) continue;
       try {
         const session = await connectTarget(target);

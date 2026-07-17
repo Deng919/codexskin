@@ -85,3 +85,12 @@ test("one-shot verification ignores the auxiliary avatar overlay", async () => {
   assert.match(injector, /avatar-overlay/);
   assert.match(injector, /filter\(\(target\) => !isAuxiliaryTarget\(target\)\)/);
 });
+
+test("watch mode cleans the avatar overlay and injects only primary targets", async () => {
+  const injector = await read("scripts/injector.mjs");
+
+  assert.match(injector, /const auxiliaryTargets = targets\.filter\(isAuxiliaryTarget\)/);
+  assert.match(injector, /removeFromSession\(auxiliarySession\)/);
+  assert.match(injector, /const primaryTargets = targets\.filter\(\(target\) => !isAuxiliaryTarget\(target\)\)/);
+  assert.match(injector, /for \(const target of primaryTargets\)/);
+});
