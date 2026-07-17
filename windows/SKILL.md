@@ -14,7 +14,7 @@ Apply a reversible renderer skin through Chromium DevTools Protocol while launch
 3. Use `scripts/switch-dream-skin.ps1 -ThemeId <id>` or a generated per-theme shortcut to persist and hot-switch theme packs.
 4. Run `scripts/verify-dream-skin.ps1 -ScreenshotPath <absolute-path>` after launch. Treat a missing full-window scene, native composer, sidebar skin, or injection marker as failure. The native suggestion count is responsive and may be two to four.
 5. Inspect the screenshot against `references/qa-inventory.md`. Verify both the home screen and a normal task before signing off.
-6. Run `scripts/restore-dream-skin.ps1` for live removal. Add `-Uninstall` to delete shortcuts; add `-RestoreBaseTheme` when the user also wants the pre-install config backup restored.
+6. Run `scripts/restore-dream-skin.ps1` for live removal. Add `-Uninstall` to delete shortcuts; use `-RestoreBaseTheme -RestartExisting` to restore the pre-install appearance and restart Codex without an injector.
 
 ## Guardrails
 

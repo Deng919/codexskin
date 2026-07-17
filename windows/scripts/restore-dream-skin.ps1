@@ -2,7 +2,9 @@
 param(
   [int]$Port = 9335,
   [switch]$Uninstall,
-  [switch]$RestoreBaseTheme
+  [switch]$RestoreBaseTheme,
+  [switch]$Reload,
+  [switch]$RestartExisting
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,7 +21,6 @@ if (Test-Path -LiteralPath $StatePath) {
   Remove-Item -LiteralPath $StatePath -Force -ErrorAction SilentlyContinue
 }
 Start-Sleep -Milliseconds 250
-try { & $node $injector --remove --port $Port --timeout-ms 3000 } catch {}
 
 if ($Uninstall) {
   $desktop = [Environment]::GetFolderPath('Desktop')
@@ -81,4 +82,14 @@ if ($RestoreBaseTheme) {
   Set-Content -LiteralPath $config -Value $currentContent -Encoding utf8
 }
 
-Write-Host 'The live Dream Skin was removed.'
+$removeArguments = @($injector, '--remove', '--port', "$Port", '--timeout-ms', '3000')
+if ($Reload -and -not $RestartExisting) { $removeArguments += '--reload' }
+try { & $node @removeArguments } catch {}
+
+if ($RestartExisting) {
+  $startScript = Join-Path $PSScriptRoot 'start-dream-skin.ps1'
+  & $startScript -Port $Port -RestartExisting -NativeOnly
+}
+
+if ($RestoreBaseTheme) { Write-Host 'The native Codex color theme was restored.' }
+else { Write-Host 'The live Dream Skin was removed.' }

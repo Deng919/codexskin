@@ -274,7 +274,7 @@ async function runOneShot(options) {
     ? discoveredTargets.filter((target) => !isAuxiliaryTarget(target))
     : discoveredTargets;
   if (!targets.length) throw new Error(`No primary Codex renderer target on 127.0.0.1:${options.port}`);
-  const payload = (options.mode === "once" || options.reload) ? await loadPayload(options.themeDir) : null;
+  const payload = options.mode === "once" ? await loadPayload(options.themeDir) : null;
   const results = [];
   for (const target of targets) {
     const session = await connectTarget(target);
@@ -287,7 +287,7 @@ async function runOneShot(options) {
       if (options.reload) {
         await session.send("Page.reload", { ignoreCache: true });
         await new Promise((resolve) => setTimeout(resolve, 1600));
-        if (options.mode !== "remove") await applyToSession(session, payload);
+        if (options.mode === "once") await applyToSession(session, payload);
       }
       const verified = options.mode === "remove"
         ? await session.evaluate("!document.documentElement.classList.contains('codex-dream-skin')")

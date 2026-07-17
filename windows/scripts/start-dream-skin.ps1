@@ -4,7 +4,8 @@ param(
   [switch]$RestartExisting,
   [string]$ProfilePath,
   [string]$ThemeId,
-  [switch]$ForegroundInjector
+  [switch]$ForegroundInjector,
+  [switch]$NativeOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,17 +19,20 @@ New-Item -ItemType Directory -Force -Path $StateRoot | Out-Null
 
 $ThemeRoot = Join-Path $SkillRoot 'themes'
 $ActiveThemePath = Join-Path $SkillRoot 'active-theme.txt'
-if ([string]::IsNullOrWhiteSpace($ThemeId)) {
-  if (-not (Test-Path -LiteralPath $ActiveThemePath)) { throw "Active theme file not found: $ActiveThemePath" }
-  $ThemeId = (Get-Content -LiteralPath $ActiveThemePath -Raw).Trim()
+$ThemeDir = $null
+if (-not $NativeOnly) {
+  if ([string]::IsNullOrWhiteSpace($ThemeId)) {
+    if (-not (Test-Path -LiteralPath $ActiveThemePath)) { throw "Active theme file not found: $ActiveThemePath" }
+    $ThemeId = (Get-Content -LiteralPath $ActiveThemePath -Raw).Trim()
+  }
+  if ($ThemeId -notmatch '^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$') { throw "Invalid theme id: $ThemeId" }
+  $ThemeRootFull = [System.IO.Path]::GetFullPath($ThemeRoot)
+  $ThemeDir = [System.IO.Path]::GetFullPath((Join-Path $ThemeRootFull $ThemeId))
+  if (-not $ThemeDir.StartsWith($ThemeRootFull + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Theme path escaped the theme root: $ThemeDir"
+  }
+  if (-not (Test-Path -LiteralPath (Join-Path $ThemeDir 'theme.json'))) { throw "Theme not found: $ThemeId" }
 }
-if ($ThemeId -notmatch '^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$') { throw "Invalid theme id: $ThemeId" }
-$ThemeRootFull = [System.IO.Path]::GetFullPath($ThemeRoot)
-$ThemeDir = [System.IO.Path]::GetFullPath((Join-Path $ThemeRootFull $ThemeId))
-if (-not $ThemeDir.StartsWith($ThemeRootFull + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
-  throw "Theme path escaped the theme root: $ThemeDir"
-}
-if (-not (Test-Path -LiteralPath (Join-Path $ThemeDir 'theme.json'))) { throw "Theme not found: $ThemeId" }
 
 function Test-CodexDebugPort([int]$CandidatePort) {
   try {
@@ -132,7 +136,13 @@ $node = (Get-Command node -ErrorAction Stop).Source
 $debugReady = Test-CodexDebugPort $Port
 $mainProcesses = @(Get-Process ChatGPT -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 })
 
-if (-not $debugReady -and -not $ProfilePath -and $mainProcesses.Count -gt 0) {
+if ($NativeOnly -and $RestartExisting -and ($debugReady -or $mainProcesses.Count -gt 0)) {
+  foreach ($process in $mainProcesses) { [void]$process.CloseMainWindow() }
+  Start-Sleep -Seconds 2
+  Get-Process ChatGPT -ErrorAction SilentlyContinue | Stop-Process -Force
+  Start-Sleep -Milliseconds 600
+  $debugReady = $false
+} elseif (-not $debugReady -and -not $ProfilePath -and $mainProcesses.Count -gt 0) {
   if (-not $RestartExisting) {
     throw "Codex is already running without dream-skin debugging on port $Port. Close Codex or rerun with -RestartExisting."
   }
@@ -169,6 +179,11 @@ if (Test-Path -LiteralPath $StatePath) {
 if ($ForegroundInjector) {
   & $node $Injector --watch --port $Port --theme-dir $ThemeDir
   exit $LASTEXITCODE
+}
+
+if ($NativeOnly) {
+  Write-Host "Codex native appearance is active on port $Port."
+  exit 0
 }
 
 $injectorArgs = @("`"$Injector`"", '--watch', '--port', "$Port", '--theme-dir', "`"$ThemeDir`"")

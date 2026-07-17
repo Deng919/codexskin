@@ -86,12 +86,13 @@ if (-not $NoShortcuts) {
       $shortcut.Save()
     }
   }
-  $restore = $shell.CreateShortcut((Join-Path $desktopThemeFolder 'Codex Dream Skin - Restore.lnk'))
+  Remove-Item -LiteralPath (Join-Path $desktopThemeFolder 'Codex Dream Skin - Restore.lnk') -Force -ErrorAction SilentlyContinue
+  $restore = $shell.CreateShortcut((Join-Path $desktopThemeFolder 'Codex - 恢复初始配色.lnk'))
   $restore.TargetPath = $powershell
-  $restore.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$restoreScript`" -Port $Port"
+  $restore.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$restoreScript`" -Port $Port -RestoreBaseTheme -RestartExisting"
   $restore.WorkingDirectory = $SkillRoot
   $restore.IconLocation = "$ShortcutIcon,0"
-  $restore.Description = 'Remove the live Codex Dream Skin'
+  $restore.Description = 'Restore the native Codex color theme'
   $restore.Save()
 }
 

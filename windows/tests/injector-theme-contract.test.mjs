@@ -72,6 +72,21 @@ test("installer creates one switch shortcut for every discovered theme", async (
   assert.match(install, /0x76AE,0x80A4,0x5207,0x6362/);
 });
 
+test("restore shortcut restores native colors by restarting Codex without an injector", async () => {
+  const install = await read("scripts/install-dream-skin.ps1");
+  const restore = await read("scripts/restore-dream-skin.ps1");
+  const injector = await read("scripts/injector.mjs");
+  const start = await read("scripts/start-dream-skin.ps1");
+
+  assert.match(install, /\$restore\.Arguments\s*=.*-RestoreBaseTheme.*-RestartExisting/);
+  assert.match(restore, /\[switch\]\$RestartExisting/);
+  assert.match(restore, /\$removeArguments\s*=.*'--remove'/);
+  assert.match(restore, /start-dream-skin\.ps1/);
+  assert.match(restore, /-NativeOnly/);
+  assert.match(start, /\[switch\]\$NativeOnly/);
+  assert.match(injector, /const payload = options\.mode === "once"\s*\? await loadPayload/);
+});
+
 test("uninstall removes only generated theme shortcuts and an empty theme folder", async () => {
   const restore = await read("scripts/restore-dream-skin.ps1");
 
