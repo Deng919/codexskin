@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "blue-night-red-eyes",
+  "shortcutName": "冷蓝红瞳",
+  "name": "Blue Night Red Eyes",
+  "hero": "hero.png",
+  "texture": "texture.png",
+  "colors": {
+    "background": "#020817",
+    "panel": "#071326",
+    "panelAlt": "#0B1D36",
+    "accent": "#176CA4",
+    "gold": "#8ED8FF",
+    "text": "#EDF7FF",
+    "muted": "#93ABC2",
+    "line": "#24557A"
+  },
+  "layout": {
+    "heroSize": "cover",
+    "heroPosition": "50% 50%",
+    "textureOpacity": 0.05
+  }
+}

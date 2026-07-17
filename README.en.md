@@ -46,6 +46,24 @@
 
 One image, one mood. Real theme previews you can ship:
 
+### Finished Windows themes
+
+These two packs were verified in the real Codex window across multiple viewports, live theme switches, and renderer reloads.
+
+<p align="center">
+  <img src="docs/images/themes/xuanjia-chijin-home.png" alt="Xuanjia Chijin" width="900"><br>
+  <sub>Xuanjia Chijin: snowfield scene, layered transparent character, dark red and aged-gold semantics</sub>
+</p>
+
+<p align="center">
+  <img src="docs/images/themes/blue-night-red-eyes-home.png" alt="Blue Night Red Eyes" width="900"><br>
+  <sub>Blue Night Red Eyes: flattened 4K scene, icy-blue semantics, no extra character layer</sub>
+</p>
+
+The generated shortcuts can switch between both packs without restarting an already-debuggable Codex window. See [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md) for the production workflow.
+
+### More concepts
+
 <p align="center">
   <img src="docs/images/gallery/skin-01.jpg" alt="Pink Custom" width="900"><br>
   <sub>Pink Custom</sub>
@@ -106,6 +124,7 @@ More detail:
 
 - Mac: [`macos/README.md`](./macos/README.md)
 - Windows: [`windows/SKILL.md`](./windows/SKILL.md)
+- Windows theme authoring: [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md)
 - Paths: [`docs/platforms.md`](./docs/platforms.md)
 - Project notes: [`docs/PROJECT.md`](./docs/PROJECT.md)
 

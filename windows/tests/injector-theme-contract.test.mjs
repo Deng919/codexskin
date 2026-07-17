@@ -20,7 +20,7 @@ test("injector requires and loads a theme directory", async () => {
   assert.match(injector, /__DREAM_HERO_JSON__/);
   assert.match(injector, /__DREAM_TEXTURE_JSON__/);
   assert.match(injector, /__DREAM_CHARACTER_JSON__/);
-  assert.match(injector, /__DREAM_AVATAR_JSON__/);
+  assert.doesNotMatch(injector, /__DREAM_AVATAR_JSON__/);
   assert.match(injector, /__DREAM_THEME_JSON__/);
 });
 
@@ -50,13 +50,45 @@ test("installer shortcuts preserve the selected active theme behavior", async ()
   assert.match(install, /-ThemeId/);
 });
 
+test("switch script persists a selected theme and refreshes the injector", async () => {
+  const switcher = await read("scripts/switch-dream-skin.ps1");
+
+  assert.match(switcher, /\[string\]\$ThemeId/);
+  assert.match(switcher, /active-theme\.txt/);
+  assert.match(switcher, /theme\.json/);
+  assert.match(switcher, /start-dream-skin\.ps1/);
+  assert.match(switcher, /\$RestartExisting/);
+});
+
+test("installer creates one switch shortcut for every discovered theme", async () => {
+  const install = await read("scripts/install-dream-skin.ps1");
+
+  assert.match(install, /Get-ChildItem[^\n]+\$ThemeRoot[^\n]+-Directory/);
+  assert.match(install, /switch-dream-skin\.ps1/);
+  assert.match(install, /Codex - \$shortcutLabel\.lnk/);
+  assert.match(install, /theme\.json'\) -Raw -Encoding utf8/);
+  assert.match(install, /codex-shortcut\.ico/);
+  assert.match(install, /\.IconLocation\s*=\s*"\$ShortcutIcon,0"/);
+  assert.match(install, /0x76AE,0x80A4,0x5207,0x6362/);
+});
+
+test("uninstall removes only generated theme shortcuts and an empty theme folder", async () => {
+  const restore = await read("scripts/restore-dream-skin.ps1");
+
+  assert.match(restore, /switch-dream-skin\.ps1/);
+  assert.match(restore, /restore-dream-skin\.ps1/);
+  assert.match(restore, /CreateShortcut/);
+  assert.match(restore, /0x76AE,0x80A4,0x5207,0x6362/);
+  assert.match(restore, /-not \(Get-ChildItem[^\n]+Select-Object -First 1\)/);
+});
+
 test("injector fallback removal clears the new theme assets", async () => {
   const injector = await read("scripts/injector.mjs");
 
   assert.match(injector, /removeProperty\('--dream-hero'\)/);
   assert.match(injector, /removeProperty\('--dream-texture'\)/);
   assert.match(injector, /removeProperty\('--dream-character'\)/);
-  assert.match(injector, /removeProperty\('--dream-avatar'\)/);
+  assert.doesNotMatch(injector, /removeProperty\('--dream-avatar'\)/);
   assert.match(injector, /themeId:\s*window\.__CODEX_DREAM_SKIN_STATE__/);
 });
 
@@ -65,6 +97,14 @@ test("renderer recognizes current Codex task timelines without a main role", asy
 
   assert.match(renderer, /data-app-action-timeline-scroll/);
   assert.match(renderer, /dream-task-shell/);
+});
+
+test("verifier accepts the home view only when custom avatar chrome is absent", async () => {
+  const injector = await read("scripts/injector.mjs");
+
+  assert.match(injector, /avatarPresent:\s*Boolean/);
+  assert.match(injector, /result\.homePresent[\s\S]{0,160}!result\.avatarPresent/);
+  assert.doesNotMatch(injector, /result\.chromePresent/);
 });
 
 test("verifier supports task state and an explicit screenshot viewport", async () => {

@@ -1,17 +1,14 @@
 :root.codex-dream-skin {
   color-scheme: dark !important;
-  --theme-background: #100d0e;
   --theme-panel: #171214;
   --theme-panel-alt: #211719;
   --theme-accent: #9f252b;
-  --theme-accent-alt: #c44338;
   --theme-gold: #b89352;
   --theme-text: #f2ece4;
   --theme-muted: #a79b95;
   --theme-line: #6d4a32;
   --theme-hero-size: cover;
   --theme-hero-position: 50% 50%;
-  --theme-overlay-strength: .72;
   --theme-texture-opacity: .08;
 }
 
@@ -98,31 +95,6 @@ html.codex-dream-skin main.main-surface > header.app-header-tint {
   backdrop-filter: blur(14px) saturate(108%) !important;
 }
 
-#codex-dream-skin-chrome {
-  position: fixed;
-  z-index: 31;
-  pointer-events: none;
-  overflow: hidden;
-  border-radius: 18px 0 0 0;
-}
-
-.dream-avatar {
-  position: absolute;
-  left: 18px;
-  top: 4px;
-  width: 38px;
-  height: 38px;
-  display: none;
-  border: 1px solid color-mix(in srgb, var(--theme-gold) 72%, transparent);
-  border-radius: 50%;
-  background: rgba(43, 14, 18, .90) var(--dream-avatar) center 16% / 142% auto no-repeat;
-  box-shadow: 0 0 0 5px rgba(159, 37, 43, .08), 0 5px 16px rgba(0, 0, 0, .34);
-}
-
-#codex-dream-skin-chrome.dream-home-shell .dream-avatar {
-  display: block;
-}
-
 html.codex-dream-skin [role="main"] {
   background: transparent !important;
   scrollbar-color: color-mix(in srgb, var(--theme-gold) 42%, transparent) transparent;
@@ -155,35 +127,11 @@ html.codex-dream-skin .dream-home {
   flex: 0 1 auto !important;
   padding: 0 !important;
   overflow: visible !important;
-  border: 1px solid color-mix(in srgb, var(--theme-gold) 62%, transparent) !important;
-  border-radius: 24px !important;
-  background-color: var(--theme-background) !important;
-  background-image: var(--dream-hero) !important;
-  background-repeat: no-repeat !important;
-  background-size: var(--theme-hero-size) !important;
-  background-position: var(--theme-hero-position) !important;
-  box-shadow: 0 16px 38px rgba(0, 0, 0, .38), 0 0 22px rgba(159, 37, 43, .05), inset 0 0 0 3px rgba(255, 224, 166, .035) !important;
-}
-
-.dream-home > div:first-child > div:first-child > div:first-child::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: 23px;
-  background:
-    linear-gradient(90deg, rgba(6, 8, 11, .98) 0%, rgba(10, 12, 15, .93) 42%, rgba(29, 15, 17, .48) 68%, transparent 100%);
-  box-shadow: inset 0 0 52px rgba(0, 0, 0, .18), inset 0 -42px 54px rgba(4, 6, 9, .22);
-  pointer-events: none;
-}
-
-.dream-home > div:first-child > div:first-child > div:first-child::after {
-  content: "";
-  position: absolute;
-  inset: -14px -8px -8px 42%;
-  z-index: 0;
-  background: var(--dream-character) right bottom / auto 108% no-repeat;
-  pointer-events: none;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
 .dream-home > div:first-child > div:first-child > div:first-child > div:first-child {
@@ -222,11 +170,11 @@ html.codex-dream-skin .dream-home {
   padding: 2px 9px 3px;
   border: 1px solid color-mix(in srgb, var(--theme-gold) 58%, transparent);
   border-radius: 999px;
-  background: rgba(65, 20, 24, .54);
+  background: color-mix(in srgb, var(--theme-accent) 34%, transparent);
   color: color-mix(in srgb, var(--theme-gold) 86%, var(--theme-text)) !important;
   text-decoration-color: var(--theme-gold) !important;
   text-underline-offset: 5px;
-  box-shadow: inset 0 0 14px rgba(183, 139, 76, .05);
+  box-shadow: inset 0 0 14px color-mix(in srgb, var(--theme-gold) 10%, transparent);
 }
 
 .dream-home > div:first-child > div:first-child > div:first-child > div:nth-child(2) {
@@ -250,12 +198,13 @@ html.codex-dream-skin .dream-home {
   border: 1px solid color-mix(in srgb, var(--theme-line) 58%, transparent) !important;
   border-radius: 21px !important;
   background:
-    radial-gradient(circle at 50% 18%, rgba(183, 139, 76, .055), transparent 38%),
-    linear-gradient(145deg, rgba(25, 25, 27, .97), rgba(13, 16, 19, .98)) !important;
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--theme-gold) 6%, transparent), transparent 38%),
+    linear-gradient(145deg, rgba(20, 22, 25, .68), rgba(9, 12, 15, .54)) !important;
   color: var(--theme-text) !important;
   font-weight: 600 !important;
   line-height: 1.45 !important;
-  box-shadow: 0 9px 22px rgba(0, 0, 0, .28), inset 0 0 0 2px rgba(183, 139, 76, .035) !important;
+  box-shadow: 0 9px 22px rgba(0, 0, 0, .24), inset 0 0 0 2px color-mix(in srgb, var(--theme-gold) 4%, transparent) !important;
+  backdrop-filter: blur(12px) saturate(108%) !important;
   transform: translateY(0);
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
 }
@@ -263,7 +212,7 @@ html.codex-dream-skin .dream-home {
 .dream-home .group\/home-suggestions button:hover {
   transform: translateY(-4px) !important;
   border-color: color-mix(in srgb, var(--theme-gold) 68%, transparent) !important;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, .34), 0 0 0 2px rgba(159, 37, 43, .06) !important;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .34), 0 0 0 2px color-mix(in srgb, var(--theme-accent) 8%, transparent) !important;
 }
 
 .dream-home .group\/home-suggestions button span,
@@ -280,8 +229,8 @@ html.codex-dream-skin .dream-home {
   border: 1px solid color-mix(in srgb, var(--theme-gold) 58%, transparent);
   border-radius: 50%;
   color: var(--theme-text) !important;
-  background: linear-gradient(145deg, rgba(126, 30, 36, .98), rgba(62, 20, 24, .98));
-  box-shadow: 0 0 0 7px rgba(159, 37, 43, .08), 0 5px 14px rgba(0, 0, 0, .28);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--theme-accent) 82%, var(--theme-panel-alt)), color-mix(in srgb, var(--theme-accent) 38%, var(--theme-panel-alt)));
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--theme-accent) 10%, transparent), 0 5px 14px rgba(0, 0, 0, .28);
 }
 
 .dream-home .group\/home-suggestions button svg {
@@ -303,9 +252,9 @@ html.codex-dream-skin .composer-surface-chrome {
   border: 1px solid color-mix(in srgb, var(--theme-line) 65%, transparent) !important;
   border-radius: 23px !important;
   background:
-    radial-gradient(circle at 88% 18%, rgba(159, 37, 43, .08), transparent 28%),
-    linear-gradient(145deg, rgba(21, 22, 24, .94), rgba(11, 14, 17, .91)) !important;
-  box-shadow: 0 11px 28px rgba(0, 0, 0, .34), inset 0 0 0 3px rgba(183, 139, 76, .03) !important;
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--theme-accent) 10%, transparent), transparent 28%),
+    linear-gradient(145deg, rgba(21, 22, 24, .78), rgba(11, 14, 17, .68)) !important;
+  box-shadow: 0 11px 28px rgba(0, 0, 0, .34), inset 0 0 0 3px color-mix(in srgb, var(--theme-gold) 5%, transparent) !important;
   backdrop-filter: blur(18px) saturate(112%) !important;
   overflow: visible !important;
 }
@@ -328,12 +277,13 @@ html.codex-dream-skin .composer-surface-chrome [data-placeholder]::after {
   border: 1px solid color-mix(in srgb, var(--theme-line) 48%, transparent);
   border-bottom: 0;
   border-radius: 23px 23px 0 0;
-  background: linear-gradient(180deg, rgba(20, 21, 23, .97), rgba(13, 15, 18, .92)) !important;
+  background: linear-gradient(180deg, rgba(20, 21, 23, .74), rgba(13, 15, 18, .58)) !important;
+  backdrop-filter: blur(14px) saturate(108%) !important;
 }
 
 .dream-home .group\/project-selector > button {
   border-color: color-mix(in srgb, var(--theme-gold) 35%, transparent) !important;
-  background: rgba(47, 25, 25, .82) !important;
+  background: color-mix(in srgb, var(--theme-panel-alt) 82%, transparent) !important;
   color: var(--theme-text) !important;
   box-shadow: 0 3px 12px rgba(0, 0, 0, .22) !important;
 }
@@ -348,17 +298,18 @@ html.codex-dream-skin .ProseMirror {
 }
 
 html.codex-dream-skin button[class~="bg-token-foreground"] {
-  background: color-mix(in srgb, var(--theme-accent) 82%, #2d1518) !important;
+  background: color-mix(in srgb, var(--theme-accent) 82%, var(--theme-panel-alt)) !important;
   color: var(--theme-text) !important;
   border: 1px solid color-mix(in srgb, var(--theme-gold) 50%, transparent) !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, .28), inset 0 1px rgba(255, 255, 255, .08) !important;
 }
 
+html.codex-dream-skin main.main-surface.dream-home-shell,
 html.codex-dream-skin main.main-surface.dream-task-shell {
   background:
     linear-gradient(90deg, rgba(6, 9, 12, .96) 0%, rgba(8, 11, 14, .84) 48%, rgba(12, 12, 14, .38) 100%),
     var(--dream-character) right -5vw bottom -5vh / auto 94% no-repeat,
-    var(--dream-hero) center / cover no-repeat !important;
+    var(--dream-hero) var(--theme-hero-position) / var(--theme-hero-size) no-repeat !important;
 }
 
 html.codex-dream-skin main.main-surface.dream-task-shell > header.app-header-tint {
@@ -402,11 +353,6 @@ html.codex-dream-skin pre {
     min-height: 238px !important;
   }
 
-  .dream-home > div:first-child > div:first-child > div:first-child::after {
-    inset: -8px -24px -8px 44%;
-    background-size: auto 106%;
-  }
-
   .dream-home > div:first-child > div:first-child > div:first-child > div:first-child > div:first-child {
     width: 58% !important;
   }
@@ -423,11 +369,6 @@ html.codex-dream-skin pre {
     min-height: 224px !important;
   }
 
-  .dream-home > div:first-child > div:first-child > div:first-child::after {
-    inset: 0 -42px -6px 48%;
-    background-size: auto 102%;
-  }
-
   .dream-home > div:first-child > div:first-child > div:first-child > div:first-child {
     padding-left: 24px;
   }
@@ -441,6 +382,7 @@ html.codex-dream-skin pre {
     font-size: 12px !important;
   }
 
+  html.codex-dream-skin main.main-surface.dream-home-shell,
   html.codex-dream-skin main.main-surface.dream-task-shell {
     background:
       linear-gradient(90deg, rgba(6, 9, 12, .98) 0%, rgba(9, 12, 15, .94) 64%, rgba(13, 13, 15, .76) 100%),

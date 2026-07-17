@@ -1,17 +1,16 @@
 {
   "schemaVersion": 1,
   "id": "xuanjia-chijin",
+  "shortcutName": "玄甲赤金",
   "name": "玄甲赤金",
   "hero": "hero.png",
   "texture": "texture.png",
   "character": "assets/xuanjia-character-cutout.png",
-  "avatar": "assets/xuanjia-avatar.png",
   "colors": {
     "background": "#100D0E",
     "panel": "#171214",
     "panelAlt": "#211719",
     "accent": "#9F252B",
-    "accentAlt": "#C44338",
     "gold": "#B89352",
     "text": "#F2ECE4",
     "muted": "#A79B95",
@@ -20,7 +19,6 @@
   "layout": {
     "heroSize": "cover",
     "heroPosition": "50% 50%",
-    "heroOverlayStrength": 0.72,
     "textureOpacity": 0.12
   }
 }

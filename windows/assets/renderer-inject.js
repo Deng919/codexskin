@@ -1,15 +1,14 @@
-((cssText, heroDataUrl, textureDataUrl, characterDataUrl, avatarDataUrl, themeConfig) => {
+((cssText, heroDataUrl, textureDataUrl, characterDataUrl, themeConfig) => {
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
-  const CHROME_ID = "codex-dream-skin-chrome";
-  const VERSION = "3.0.1";
+  const VERSION = "3.3.1";
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const THEME_VARIABLES = [
-    "--theme-background", "--theme-panel", "--theme-panel-alt", "--theme-accent",
-    "--theme-accent-alt", "--theme-gold", "--theme-text", "--theme-muted",
+    "--theme-panel", "--theme-panel-alt", "--theme-accent",
+    "--theme-gold", "--theme-text", "--theme-muted",
     "--theme-line", "--theme-hero-size", "--theme-hero-position",
-    "--theme-overlay-strength", "--theme-texture-opacity", "--dream-hero", "--dream-texture",
-    "--dream-character", "--dream-avatar",
+    "--theme-texture-opacity", "--dream-hero", "--dream-texture",
+    "--dream-character",
   ];
   window.__CODEX_DREAM_SKIN_DISABLED__ = false;
 
@@ -21,7 +20,6 @@
   if (previous?.heroUrl) URL.revokeObjectURL(previous.heroUrl);
   if (previous?.textureUrl) URL.revokeObjectURL(previous.textureUrl);
   if (previous?.characterUrl) URL.revokeObjectURL(previous.characterUrl);
-  if (previous?.avatarUrl) URL.revokeObjectURL(previous.avatarUrl);
 
   const objectUrlFromData = (dataUrl) => {
     const comma = dataUrl.indexOf(",");
@@ -34,30 +32,27 @@
 
   const heroUrl = objectUrlFromData(heroDataUrl);
   const textureUrl = objectUrlFromData(textureDataUrl);
-  const characterUrl = objectUrlFromData(characterDataUrl);
-  const avatarUrl = objectUrlFromData(avatarDataUrl);
+  const characterUrl = characterDataUrl ? objectUrlFromData(characterDataUrl) : null;
 
   const applyThemeVariables = (root) => {
     const colors = THEME.colors || {};
     const layout = THEME.layout || {};
     const variables = {
-      "--theme-background": colors.background || "#100D0E",
       "--theme-panel": colors.panel || "#171214",
       "--theme-panel-alt": colors.panelAlt || "#211719",
       "--theme-accent": colors.accent || "#9F252B",
-      "--theme-accent-alt": colors.accentAlt || "#C44338",
       "--theme-gold": colors.gold || "#B89352",
       "--theme-text": colors.text || "#F2ECE4",
       "--theme-muted": colors.muted || "#A79B95",
       "--theme-line": colors.line || "#6D4A32",
       "--theme-hero-size": layout.heroSize || "cover",
       "--theme-hero-position": layout.heroPosition || "58% 36%",
-      "--theme-overlay-strength": String(layout.heroOverlayStrength ?? 0.72),
       "--theme-texture-opacity": String(layout.textureOpacity ?? 0.12),
       "--dream-hero": `url("${heroUrl}")`,
       "--dream-texture": `url("${textureUrl}")`,
-      "--dream-character": `url("${characterUrl}")`,
-      "--dream-avatar": `url("${avatarUrl}")`,
+      "--dream-character": characterUrl
+        ? `url("${characterUrl}")`
+        : "linear-gradient(transparent, transparent)",
     };
     for (const [name, value] of Object.entries(variables)) root.style.setProperty(name, value);
   };
@@ -87,27 +82,12 @@
     }
     if (home) home.classList.add("dream-home");
 
+    document.getElementById("codex-dream-skin-chrome")?.remove();
     if (!shellMain || !document.body) return;
     const taskTimeline = shellMain.querySelector('[data-app-action-timeline-scroll]');
     const task = !home && Boolean(taskTimeline);
     shellMain.classList.toggle("dream-home-shell", Boolean(home));
     shellMain.classList.toggle("dream-task-shell", task);
-    let chrome = document.getElementById(CHROME_ID);
-    if (!chrome || chrome.parentElement !== document.body) {
-      chrome?.remove();
-      chrome = document.createElement("div");
-      chrome.id = CHROME_ID;
-      chrome.setAttribute("aria-hidden", "true");
-      chrome.innerHTML = '<div class="dream-avatar"></div>';
-      document.body.appendChild(chrome);
-    }
-    const shellBox = shellMain.getBoundingClientRect();
-    chrome.style.left = `${Math.round(shellBox.left)}px`;
-    chrome.style.top = `${Math.round(shellBox.top)}px`;
-    chrome.style.width = `${Math.round(shellBox.width)}px`;
-    chrome.style.height = `${Math.round(shellBox.height)}px`;
-    chrome.classList.toggle("dream-home-shell", Boolean(home));
-    chrome.classList.toggle("dream-task-shell", task);
   };
 
   const cleanup = () => {
@@ -118,7 +98,7 @@
     document.querySelectorAll(".dream-home-shell").forEach((node) => node.classList.remove("dream-home-shell"));
     document.querySelectorAll(".dream-task-shell").forEach((node) => node.classList.remove("dream-task-shell"));
     document.getElementById(STYLE_ID)?.remove();
-    document.getElementById(CHROME_ID)?.remove();
+    document.getElementById("codex-dream-skin-chrome")?.remove();
     const state = window[STATE_KEY];
     state?.observer?.disconnect();
     if (state?.timer) clearInterval(state.timer);
@@ -127,7 +107,6 @@
     if (state?.heroUrl) URL.revokeObjectURL(state.heroUrl);
     if (state?.textureUrl) URL.revokeObjectURL(state.textureUrl);
     if (state?.characterUrl) URL.revokeObjectURL(state.characterUrl);
-    if (state?.avatarUrl) URL.revokeObjectURL(state.avatarUrl);
     delete window[STATE_KEY];
     return true;
   };
@@ -155,10 +134,9 @@
     heroUrl,
     textureUrl,
     characterUrl,
-    avatarUrl,
     themeId: THEME.id || null,
     version: VERSION,
   };
   ensure();
   return { installed: true, version: VERSION, themeId: THEME.id || null };
-})(__DREAM_CSS_JSON__, __DREAM_HERO_JSON__, __DREAM_TEXTURE_JSON__, __DREAM_CHARACTER_JSON__, __DREAM_AVATAR_JSON__, __DREAM_THEME_JSON__)
+})(__DREAM_CSS_JSON__, __DREAM_HERO_JSON__, __DREAM_TEXTURE_JSON__, __DREAM_CHARACTER_JSON__, __DREAM_THEME_JSON__)

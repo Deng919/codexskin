@@ -3,7 +3,7 @@ import path from "node:path";
 
 const MAX_ART_BYTES = 16 * 1024 * 1024;
 const COLOR_KEYS = [
-  "background", "panel", "panelAlt", "accent", "accentAlt",
+  "background", "panel", "panelAlt", "accent",
   "gold", "text", "muted", "line",
 ];
 const MIME_TYPES = new Map([
@@ -121,28 +121,24 @@ export async function loadTheme(themeDir) {
     name: requireText(raw.name, "name", 80),
     hero: requireText(raw.hero, "hero", 120),
     texture: requireText(raw.texture, "texture", 120),
-    character: requireText(raw.character, "character", 120),
-    avatar: requireText(raw.avatar, "avatar", 120),
+    character: raw.character == null ? null : requireText(raw.character, "character", 120),
     colors,
     layout: {
       heroSize: requireHeroSize(layoutInput.heroSize),
       heroPosition: requireHeroPosition(layoutInput.heroPosition),
-      heroOverlayStrength: requireUnitInterval(layoutInput.heroOverlayStrength, "layout.heroOverlayStrength"),
       textureOpacity: requireUnitInterval(layoutInput.textureOpacity, "layout.textureOpacity"),
     },
   };
 
   const heroDescriptor = validateImageName(theme.hero, "hero");
   const textureDescriptor = validateImageName(theme.texture, "texture");
-  const characterDescriptor = validateImageName(theme.character, "character");
-  const avatarDescriptor = validateImageName(theme.avatar, "avatar");
-  const [hero, texture, character, avatar] = await Promise.all([
+  const characterDescriptor = theme.character ? validateImageName(theme.character, "character") : null;
+  const [hero, texture, character] = await Promise.all([
     readImage(root, heroDescriptor, "hero"),
     readImage(root, textureDescriptor, "texture"),
-    readImage(root, characterDescriptor, "character"),
-    readImage(root, avatarDescriptor, "avatar"),
+    characterDescriptor ? readImage(root, characterDescriptor, "character") : Promise.resolve(null),
   ]);
-  return { root, theme, hero, texture, character, avatar };
+  return { root, theme, hero, texture, character };
 }
 
 export async function buildThemePayload(themeDir) {
@@ -151,7 +147,8 @@ export async function buildThemePayload(themeDir) {
     theme: loaded.theme,
     heroDataUrl: `data:${loaded.hero.mime};base64,${loaded.hero.bytes.toString("base64")}`,
     textureDataUrl: `data:${loaded.texture.mime};base64,${loaded.texture.bytes.toString("base64")}`,
-    characterDataUrl: `data:${loaded.character.mime};base64,${loaded.character.bytes.toString("base64")}`,
-    avatarDataUrl: `data:${loaded.avatar.mime};base64,${loaded.avatar.bytes.toString("base64")}`,
+    characterDataUrl: loaded.character
+      ? `data:${loaded.character.mime};base64,${loaded.character.bytes.toString("base64")}`
+      : null,
   };
 }

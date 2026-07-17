@@ -153,7 +153,6 @@ async function loadPayload(themeDir) {
     .replace("__DREAM_HERO_JSON__", JSON.stringify(themePayload.heroDataUrl))
     .replace("__DREAM_TEXTURE_JSON__", JSON.stringify(themePayload.textureDataUrl))
     .replace("__DREAM_CHARACTER_JSON__", JSON.stringify(themePayload.characterDataUrl))
-    .replace("__DREAM_AVATAR_JSON__", JSON.stringify(themePayload.avatarDataUrl))
     .replace("__DREAM_THEME_JSON__", JSON.stringify(themePayload.theme));
 }
 
@@ -174,7 +173,6 @@ async function removeFromSession(session) {
     document.documentElement?.style.removeProperty('--dream-hero');
     document.documentElement?.style.removeProperty('--dream-texture');
     document.documentElement?.style.removeProperty('--dream-character');
-    document.documentElement?.style.removeProperty('--dream-avatar');
     document.getElementById('codex-dream-skin-style')?.remove();
     document.getElementById('codex-dream-skin-chrome')?.remove();
     return true;
@@ -197,8 +195,6 @@ async function verifySession(session) {
       version: window.__CODEX_DREAM_SKIN_STATE__?.version ?? null,
       themeId: window.__CODEX_DREAM_SKIN_STATE__?.themeId ?? null,
       stylePresent: Boolean(document.getElementById('codex-dream-skin-style')),
-      chromePresent: Boolean(document.getElementById('codex-dream-skin-chrome')),
-      chromePointerEvents: getComputedStyle(document.getElementById('codex-dream-skin-chrome') || document.body).pointerEvents,
       homePresent: Boolean(home),
       taskPresent: Boolean(task),
       avatarPresent: Boolean(document.querySelector('#codex-dream-skin-chrome .dream-avatar')),
@@ -213,11 +209,11 @@ async function verifySession(session) {
         y: document.documentElement.scrollHeight > document.documentElement.clientHeight,
       },
     };
-    const homePass = result.homePresent && Boolean(result.hero) && result.avatarPresent &&
+    const homePass = result.homePresent && Boolean(result.hero) && !result.avatarPresent &&
       (!result.suggestionsPresent || (result.cards.length >= 2 && result.cards.length <= 4));
     const taskPass = result.taskPresent;
-    result.pass = result.installed && result.stylePresent && result.chromePresent &&
-      result.chromePointerEvents === 'none' && Boolean(result.composer) && Boolean(result.sidebar) &&
+    result.pass = result.installed && result.stylePresent &&
+      Boolean(result.composer) && Boolean(result.sidebar) &&
       (homePass || taskPass);
     return result;
   })()`);

@@ -7,3 +7,5 @@
 - `%LOCALAPPDATA%\CodexDreamSkin\state.json` records the port and daemon PID. Logs stay in the same directory.
 - If Codex is already running without the chosen debugging port, close it first or explicitly use `-RestartExisting`.
 - Store updates are supported because the launcher queries `Get-AppxPackage OpenAI.Codex` on every launch.
+- Theme switches update `active-theme.txt`, the official base colors, and the injector daemon without restarting an already-debuggable Codex window.
+- Generated desktop shortcuts live under the `Codex 皮肤切换` folder; uninstall removes only shortcuts that target this repository's switch or restore scripts.

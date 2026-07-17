@@ -45,6 +45,24 @@
 
 一张图，一种心情。下面都是可落地的主题示意效果：
 
+### Windows 成品主题
+
+仓库包含两套经过真实 Codex 窗口、双视口、热切换和 reload 验证的 Windows 主题包。
+
+<p align="center">
+  <img src="docs/images/themes/xuanjia-chijin-home.png" alt="玄甲赤金" width="900"><br>
+  <sub>玄甲赤金：雪原战场 + 透明人物层 + 暗红旧金语义色</sub>
+</p>
+
+<p align="center">
+  <img src="docs/images/themes/blue-night-red-eyes-home.png" alt="冷蓝红瞳" width="900"><br>
+  <sub>冷蓝红瞳：4K 一体背景 + 冰蓝语义色 + 全透明兼容人物层</sub>
+</p>
+
+两套主题可通过生成的快捷方式双向热切换。完整制作流程见 [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md)。
+
+### 更多主题示意
+
 <p align="center">
   <img src="docs/images/gallery/skin-01.jpg" alt="粉系定制" width="900"><br>
   <sub>粉系定制</sub>
@@ -105,6 +123,7 @@
 
 - Mac：[`macos/README.md`](./macos/README.md)
 - Windows：[`windows/SKILL.md`](./windows/SKILL.md)
+- Windows 主题制作：[`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md)
 - 路径对照：[`docs/platforms.md`](./docs/platforms.md)
 - 项目记录：[`docs/PROJECT.md`](./docs/PROJECT.md)
 
