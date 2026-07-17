@@ -2,10 +2,20 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const MAX_ART_BYTES = 16 * 1024 * 1024;
-const COLOR_KEYS = [
+const BASE_COLOR_KEYS = [
   "background", "panel", "panelAlt", "accent",
   "gold", "text", "muted", "line",
 ];
+const SEMANTIC_COLOR_FALLBACKS = {
+  link: (colors) => colors.gold,
+  code: (colors) => colors.gold,
+  quote: (colors) => colors.muted,
+  success: () => "#83AD87",
+  warning: (colors) => colors.gold,
+  danger: (colors) => colors.accent,
+  diffAdded: () => "#6F9F76",
+  diffRemoved: () => "#B95C64",
+};
 const MIME_TYPES = new Map([
   [".png", "image/png"],
   [".jpg", "image/jpeg"],
@@ -111,10 +121,15 @@ export async function loadTheme(themeDir) {
   }
   const colorsInput = requireObject(raw.colors, "colors");
   const layoutInput = requireObject(raw.layout, "layout");
-  const colors = Object.fromEntries(COLOR_KEYS.map((key) => [
+  const colors = Object.fromEntries(BASE_COLOR_KEYS.map((key) => [
     key,
     requireColor(colorsInput[key], `colors.${key}`),
   ]));
+  for (const [key, fallback] of Object.entries(SEMANTIC_COLOR_FALLBACKS)) {
+    colors[key] = colorsInput[key] == null
+      ? fallback(colors)
+      : requireColor(colorsInput[key], `colors.${key}`);
+  }
   const theme = {
     schemaVersion: 1,
     id,

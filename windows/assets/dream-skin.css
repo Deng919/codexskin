@@ -7,6 +7,14 @@
   --theme-text: #f2ece4;
   --theme-muted: #a79b95;
   --theme-line: #6d4a32;
+  --theme-link: #d6aa62;
+  --theme-code: #e0b47a;
+  --theme-quote: #c69a62;
+  --theme-success: #83ad87;
+  --theme-warning: #d4a84f;
+  --theme-danger: #d16d72;
+  --theme-diff-added: #6f9f76;
+  --theme-diff-removed: #b95c64;
   --theme-hero-size: cover;
   --theme-hero-position: 50% 50%;
   --theme-texture-opacity: .08;
@@ -339,7 +347,85 @@ html.codex-dream-skin article li {
 html.codex-dream-skin code,
 html.codex-dream-skin pre {
   border-color: color-mix(in srgb, var(--theme-line) 44%, transparent) !important;
-  background-color: rgba(9, 12, 15, .76) !important;
+  background-color: color-mix(in srgb, var(--theme-panel) 82%, rgba(3, 6, 9, .76)) !important;
+}
+
+html.codex-dream-skin article a,
+html.codex-dream-skin article a *,
+html.codex-dream-skin .dream-task-shell [class*="inline-mention"],
+html.codex-dream-skin .dream-task-shell [class*="inline-mention"] *,
+html.codex-dream-skin .dream-task-shell [class*="text-token-link"] {
+  color: var(--theme-link) !important;
+  text-decoration-color: color-mix(in srgb, var(--theme-link) 62%, transparent) !important;
+}
+
+html.codex-dream-skin article code:not(pre code),
+html.codex-dream-skin article code:not(pre code) *,
+html.codex-dream-skin article .inline-markdown,
+html.codex-dream-skin article .inline-markdown *,
+html.codex-dream-skin .dream-task-shell [data-app-action-timeline-scroll] code:not(pre code),
+html.codex-dream-skin .dream-task-shell [data-app-action-timeline-scroll] code:not(pre code) *,
+html.codex-dream-skin .dream-task-shell .inline-markdown,
+html.codex-dream-skin .dream-task-shell .inline-markdown * {
+  color: var(--theme-code) !important;
+  border-color: color-mix(in srgb, var(--theme-code) 28%, transparent) !important;
+  background: color-mix(in srgb, var(--theme-code) 11%, var(--theme-panel)) !important;
+}
+
+html.codex-dream-skin article blockquote,
+html.codex-dream-skin article blockquote *,
+html.codex-dream-skin .dream-task-shell [data-app-action-timeline-scroll] blockquote,
+html.codex-dream-skin .dream-task-shell [data-app-action-timeline-scroll] blockquote * {
+  color: var(--theme-quote) !important;
+  border-left-color: color-mix(in srgb, var(--theme-quote) 62%, transparent) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="text-token-success"],
+html.codex-dream-skin .dream-task-shell [data-status="success"] {
+  color: var(--theme-success) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="text-token-warning"],
+html.codex-dream-skin .dream-task-shell [data-status="warning"] {
+  color: var(--theme-warning) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="text-token-danger"],
+html.codex-dream-skin .dream-task-shell [class*="text-token-error"],
+html.codex-dream-skin .dream-task-shell [data-status="error"] {
+  color: var(--theme-danger) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="bg-token-success"] {
+  border-color: color-mix(in srgb, var(--theme-success) 42%, transparent) !important;
+  background-color: color-mix(in srgb, var(--theme-success) 12%, transparent) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="bg-token-warning"] {
+  border-color: color-mix(in srgb, var(--theme-warning) 42%, transparent) !important;
+  background-color: color-mix(in srgb, var(--theme-warning) 12%, transparent) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="bg-token-danger"],
+html.codex-dream-skin .dream-task-shell [class*="bg-token-error"] {
+  border-color: color-mix(in srgb, var(--theme-danger) 42%, transparent) !important;
+  background-color: color-mix(in srgb, var(--theme-danger) 12%, transparent) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="diff-added"],
+html.codex-dream-skin .dream-task-shell [class*="diffAdded"],
+html.codex-dream-skin .dream-task-shell [data-diff-type="added"],
+html.codex-dream-skin .dream-task-shell [data-line-type="addition"] {
+  color: var(--theme-diff-added) !important;
+  background-color: color-mix(in srgb, var(--theme-diff-added) 13%, transparent) !important;
+}
+
+html.codex-dream-skin .dream-task-shell [class*="diff-removed"],
+html.codex-dream-skin .dream-task-shell [class*="diffRemoved"],
+html.codex-dream-skin .dream-task-shell [data-diff-type="removed"],
+html.codex-dream-skin .dream-task-shell [data-line-type="deletion"] {
+  color: var(--theme-diff-removed) !important;
+  background-color: color-mix(in srgb, var(--theme-diff-removed) 13%, transparent) !important;
 }
 
 @media (max-width: 1120px) {

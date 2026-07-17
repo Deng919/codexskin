@@ -35,7 +35,7 @@ $body = $desktopMatch.Groups['body'].Value
 $settings = [ordered]@{
   appearanceTheme = 'appearanceTheme = "dark"'
   appearanceDarkCodeThemeId = 'appearanceDarkCodeThemeId = "codex"'
-  appearanceDarkChromeTheme = "appearanceDarkChromeTheme = { accent = `"$($ThemeConfig.colors.accent)`", contrast = 70, fonts = { code = `"Cascadia Code`", ui = `"Microsoft YaHei UI`" }, ink = `"$($ThemeConfig.colors.text)`", opaqueWindows = true, semanticColors = { diffAdded = `"#3D7A59`", diffRemoved = `"#A83A43`", skill = `"$($ThemeConfig.colors.gold)`" }, surface = `"$($ThemeConfig.colors.background)`" }"
+  appearanceDarkChromeTheme = "appearanceDarkChromeTheme = { accent = `"$($ThemeConfig.colors.accent)`", contrast = 70, fonts = { code = `"Cascadia Code`", ui = `"Microsoft YaHei UI`" }, ink = `"$($ThemeConfig.colors.text)`", opaqueWindows = true, semanticColors = { diffAdded = `"$($ThemeConfig.colors.diffAdded)`", diffRemoved = `"$($ThemeConfig.colors.diffRemoved)`", skill = `"$($ThemeConfig.colors.gold)`" }, surface = `"$($ThemeConfig.colors.background)`" }"
 }
 foreach ($key in $settings.Keys) {
   $pattern = "(?m)^$([regex]::Escape($key))\s*=.*$"

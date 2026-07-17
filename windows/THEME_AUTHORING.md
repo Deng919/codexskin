@@ -53,7 +53,15 @@ themes/<theme-id>/
     "gold": "#8ED8FF",
     "text": "#EDF7FF",
     "muted": "#93ABC2",
-    "line": "#24557A"
+    "line": "#24557A",
+    "link": "#71CFFF",
+    "code": "#A7D8FF",
+    "quote": "#84BFE5",
+    "success": "#61C7A5",
+    "warning": "#E7C66D",
+    "danger": "#FF7F8E",
+    "diffAdded": "#4DB99B",
+    "diffRemoved": "#E06B7A"
   },
   "layout": {
     "heroSize": "cover",
@@ -63,7 +71,15 @@ themes/<theme-id>/
 }
 ```
 
-颜色字段必须表达用途，而不是某个主题的固定颜色。共享 CSS 只引用 `--theme-*` 变量，因此切换主题时建议卡、项目选择器、输入框、按钮、边框和滚动条会一起换色。
+颜色字段必须表达用途，而不是某个主题的固定颜色。共享 CSS 只引用 `--theme-*` 变量，因此切换主题时建议卡、项目选择器、输入框、按钮、边框、滚动条和正文语义色会一起换色。
+
+- `link`：正文链接、文件名、路径和 inline mention。
+- `code`：行内代码；代码块继续保留 Codex 官方语法高亮，只使用主题面板色和边框色。
+- `quote`：引用块文字与左边框。
+- `success`、`warning`、`danger`：运行状态和提示反馈。
+- `diffAdded`、`diffRemoved`：diff 行及 Codex 原生语义色。
+
+这些扩展语义色对旧的 schema v1 主题兼容。旧主题未配置时会从 `gold`、`muted` 和 `accent` 等基础字段推导；新主题应显式配置，以保证切换后正文颜色真正体现主题差异。
 
 ## 安装与热切换
 

@@ -41,8 +41,34 @@ test("renderer maps visual theme data to CSS variables", async () => {
   assert.match(renderer, /--theme-hero-position/);
   assert.doesNotMatch(renderer, /--theme-overlay-strength/);
   assert.match(renderer, /--theme-texture-opacity/);
+  for (const variable of [
+    "link", "code", "quote", "success", "warning", "danger", "diff-added", "diff-removed",
+  ]) {
+    assert.match(renderer, new RegExp(`--theme-${variable}`));
+  }
   assert.match(renderer, /--dream-character/);
   assert.doesNotMatch(renderer, /--dream-avatar/);
+});
+
+test("task content consumes the theme-specific semantic palette", async () => {
+  const css = await read("assets/dream-skin.css");
+
+  assert.match(css, /article a[\s\S]{0,300}var\(--theme-link\)/);
+  assert.match(css, /code:not\(pre code\)[\s\S]{0,300}var\(--theme-code\)/);
+  assert.match(css, /dream-task-shell \.inline-markdown[\s\S]{0,300}var\(--theme-code\)/);
+  assert.match(css, /blockquote[\s\S]{0,300}var\(--theme-quote\)/);
+  for (const variable of ["success", "warning", "danger", "diff-added", "diff-removed"]) {
+    assert.match(css, new RegExp(`var\\(--theme-${variable}\\)`));
+  }
+});
+
+test("installer forwards per-theme diff colors to native Codex semantics", async () => {
+  const install = await read("scripts/install-dream-skin.ps1");
+
+  assert.match(install, /ThemeConfig\.colors\.diffAdded/);
+  assert.match(install, /ThemeConfig\.colors\.diffRemoved/);
+  assert.doesNotMatch(install, /diffAdded\s*=\s*`"#3D7A59/);
+  assert.doesNotMatch(install, /diffRemoved\s*=\s*`"#A83A43/);
 });
 
 test("skin CSS is data-driven and contains no Fiona pink-purple palette", async () => {

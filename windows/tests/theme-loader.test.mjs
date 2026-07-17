@@ -28,6 +28,14 @@ function baseTheme(overrides = {}) {
       text: "#F2ECE4",
       muted: "#A79B95",
       line: "#6D4A32",
+      link: "#D6AA62",
+      code: "#E0B47A",
+      quote: "#C69A62",
+      success: "#83AD87",
+      warning: "#D4A84F",
+      danger: "#D16D72",
+      diffAdded: "#6F9F76",
+      diffRemoved: "#C96A72",
     },
     layout: {
       heroSize: "cover",
@@ -117,6 +125,37 @@ test("rejects invalid colors", async (t) => {
   t.after(() => fs.rm(root, { recursive: true, force: true }));
 
   await assert.rejects(loadTheme(root), /colors\.accent must be a six-digit hex color/);
+});
+
+test("loads a complete theme-specific semantic palette", async (t) => {
+  const root = await makeTheme();
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+
+  const loaded = await loadTheme(root);
+
+  assert.deepEqual(
+    Object.keys(loaded.theme.colors).filter((key) =>
+      ["link", "code", "quote", "success", "warning", "danger", "diffAdded", "diffRemoved"].includes(key)
+    ),
+    ["link", "code", "quote", "success", "warning", "danger", "diffAdded", "diffRemoved"],
+  );
+});
+
+test("derives semantic colors for older schema v1 theme packs", async (t) => {
+  const legacyColors = { ...baseTheme().colors };
+  for (const key of ["link", "code", "quote", "success", "warning", "danger", "diffAdded", "diffRemoved"]) {
+    delete legacyColors[key];
+  }
+  const root = await makeTheme({ colors: legacyColors });
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+
+  const loaded = await loadTheme(root);
+
+  assert.equal(loaded.theme.colors.link, legacyColors.gold);
+  assert.equal(loaded.theme.colors.code, legacyColors.gold);
+  assert.equal(loaded.theme.colors.quote, legacyColors.muted);
+  assert.equal(loaded.theme.colors.warning, legacyColors.gold);
+  assert.equal(loaded.theme.colors.danger, legacyColors.accent);
 });
 
 test("rejects missing image files", async (t) => {

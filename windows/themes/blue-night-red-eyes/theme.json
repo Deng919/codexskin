@@ -13,7 +13,15 @@
     "gold": "#8ED8FF",
     "text": "#EDF7FF",
     "muted": "#93ABC2",
-    "line": "#24557A"
+    "line": "#24557A",
+    "link": "#71CFFF",
+    "code": "#A7D8FF",
+    "quote": "#84BFE5",
+    "success": "#61C7A5",
+    "warning": "#E7C66D",
+    "danger": "#FF7F8E",
+    "diffAdded": "#4DB99B",
+    "diffRemoved": "#E06B7A"
   },
   "layout": {
     "heroSize": "cover",

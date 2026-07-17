@@ -1,12 +1,15 @@
 ((cssText, heroDataUrl, textureDataUrl, characterDataUrl, themeConfig) => {
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
-  const VERSION = "3.3.1";
+  const VERSION = "3.4.2";
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const THEME_VARIABLES = [
     "--theme-panel", "--theme-panel-alt", "--theme-accent",
     "--theme-gold", "--theme-text", "--theme-muted",
-    "--theme-line", "--theme-hero-size", "--theme-hero-position",
+    "--theme-line", "--theme-link", "--theme-code", "--theme-quote",
+    "--theme-success", "--theme-warning", "--theme-danger",
+    "--theme-diff-added", "--theme-diff-removed",
+    "--theme-hero-size", "--theme-hero-position",
     "--theme-texture-opacity", "--dream-hero", "--dream-texture",
     "--dream-character",
   ];
@@ -45,6 +48,14 @@
       "--theme-text": colors.text || "#F2ECE4",
       "--theme-muted": colors.muted || "#A79B95",
       "--theme-line": colors.line || "#6D4A32",
+      "--theme-link": colors.link || colors.gold || "#D6AA62",
+      "--theme-code": colors.code || colors.gold || "#E0B47A",
+      "--theme-quote": colors.quote || colors.muted || "#C69A62",
+      "--theme-success": colors.success || "#83AD87",
+      "--theme-warning": colors.warning || colors.gold || "#D4A84F",
+      "--theme-danger": colors.danger || colors.accent || "#D16D72",
+      "--theme-diff-added": colors.diffAdded || "#6F9F76",
+      "--theme-diff-removed": colors.diffRemoved || "#B95C64",
       "--theme-hero-size": layout.heroSize || "cover",
       "--theme-hero-position": layout.heroPosition || "58% 36%",
       "--theme-texture-opacity": String(layout.textureOpacity ?? 0.12),
