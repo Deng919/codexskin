@@ -31,7 +31,7 @@
 
 ### Windows 成品主题
 
-仓库包含两套经过真实 Codex 窗口、双视口、热切换和 reload 验证的 Windows 主题包。
+仓库包含五套经过真实 Codex 窗口、热切换和 reload 验证的 Windows 主题包。
 
 <p align="center">
   <img src="docs/images/themes/xuanjia-chijin-home.png" alt="玄甲赤金" width="900"><br>
@@ -43,7 +43,9 @@
   <sub>冷蓝红瞳：4K 一体背景 + 冰蓝语义色 + 全透明兼容人物层</sub>
 </p>
 
-两套主题可通过生成的快捷方式双向热切换。完整制作流程见 [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md)。
+另外包含三套一体背景主题：`霓虹樱城`、`霜白电竞`、`星海潮汐`。它们分别使用粉紫霓虹、冷灰红蓝和深海星光语义色，不添加人物或头像覆盖层。
+
+五套主题可通过生成的快捷方式双向热切换。完整制作流程见 [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md)。
 
 
 

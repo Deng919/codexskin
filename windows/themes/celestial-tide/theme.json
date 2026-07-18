@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "celestial-tide",
+  "shortcutName": "星海潮汐",
+  "name": "Celestial Tide",
+  "hero": "hero.jpg",
+  "texture": "texture.png",
+  "colors": {
+    "background": "#020817",
+    "panel": "#071528",
+    "panelAlt": "#0C243C",
+    "accent": "#1687B8",
+    "gold": "#A8E8FF",
+    "text": "#F1F8FF",
+    "muted": "#99B8D3",
+    "line": "#28658B",
+    "link": "#74DFFF",
+    "code": "#B8E5FF",
+    "quote": "#8FC8E8",
+    "success": "#5BC5AC",
+    "warning": "#E5C96C",
+    "danger": "#F07B88",
+    "diffAdded": "#4EB89D",
+    "diffRemoved": "#D96878"
+  },
+  "layout": {
+    "heroSize": "cover",
+    "heroPosition": "42% 50%",
+    "textureOpacity": 0
+  }
+}

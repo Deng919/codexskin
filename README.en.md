@@ -25,7 +25,7 @@ One image, one mood. Real theme previews you can ship:
 
 ### Finished Windows themes
 
-These two packs were verified in the real Codex window across multiple viewports, live theme switches, and renderer reloads.
+Five packs are verified in the real Codex window across live theme switches and renderer reloads.
 
 <p align="center">
   <img src="docs/images/themes/xuanjia-chijin-home.png" alt="Xuanjia Chijin" width="900"><br>
@@ -37,7 +37,9 @@ These two packs were verified in the real Codex window across multiple viewports
   <sub>Blue Night Red Eyes: flattened 4K scene, icy-blue semantics, no extra character layer</sub>
 </p>
 
-The generated shortcuts can switch between both packs without restarting an already-debuggable Codex window. See [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md) for the production workflow.
+Three additional flattened-scene packs are included: `Neon Sakura City`, `Frostbyte Game Room`, and `Celestial Tide`. Each has its own semantic palette and no extra character or avatar overlay.
+
+Generated shortcuts switch among all five packs without restarting an already-debuggable Codex window. See [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md) for the production workflow.
 
 
 

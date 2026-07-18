@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "neon-sakura-city",
+  "shortcutName": "霓虹樱城",
+  "name": "Neon Sakura City",
+  "hero": "hero.jpg",
+  "texture": "texture.png",
+  "colors": {
+    "background": "#0B0C1A",
+    "panel": "#171525",
+    "panelAlt": "#251D37",
+    "accent": "#B451A9",
+    "gold": "#F2A7D9",
+    "text": "#F8F1FA",
+    "muted": "#B8A9C1",
+    "line": "#69446F",
+    "link": "#79D5F2",
+    "code": "#F0B3DF",
+    "quote": "#C9A7E6",
+    "success": "#6CC7AD",
+    "warning": "#E7C66D",
+    "danger": "#F17B9A",
+    "diffAdded": "#59B99D",
+    "diffRemoved": "#DB6A88"
+  },
+  "layout": {
+    "heroSize": "cover",
+    "heroPosition": "50% 50%",
+    "textureOpacity": 0
+  }
+}

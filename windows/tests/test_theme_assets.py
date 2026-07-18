@@ -6,14 +6,26 @@ from PIL import Image
 
 
 class ThemeAssetsTest(unittest.TestCase):
+    expected_theme_ids = {
+        "xuanjia-chijin",
+        "blue-night-red-eyes",
+        "neon-sakura-city",
+        "frostbyte-game-room",
+        "celestial-tide",
+    }
+
     @classmethod
     def setUpClass(cls):
         cls.theme_root = Path(__file__).resolve().parents[1] / "themes"
         cls.themes = {}
-        for theme_id in ("xuanjia-chijin", "blue-night-red-eyes"):
+        for theme_id in sorted(cls.expected_theme_ids):
             root = cls.theme_root / theme_id
             config = json.loads((root / "theme.json").read_text(encoding="utf-8"))
             cls.themes[theme_id] = (root, config)
+
+    def test_all_finished_themes_are_present(self):
+        discovered = {path.name for path in self.theme_root.iterdir() if (path / "theme.json").is_file()}
+        self.assertEqual(discovered, self.expected_theme_ids)
 
     def test_scenes_are_16_by_9_and_fit_the_loader_limit(self):
         for theme_id, (root, config) in self.themes.items():
@@ -34,8 +46,10 @@ class ThemeAssetsTest(unittest.TestCase):
             self.assertEqual(foreground.mode, "RGBA")
             self.assertIsNotNone(foreground.getchannel("A").getbbox())
 
-        _, blue = self.themes["blue-night-red-eyes"]
-        self.assertNotIn("character", blue)
+        for theme_id in self.expected_theme_ids - {"xuanjia-chijin"}:
+            with self.subTest(theme=theme_id):
+                _, config = self.themes[theme_id]
+                self.assertNotIn("character", config)
 
 
 if __name__ == "__main__":

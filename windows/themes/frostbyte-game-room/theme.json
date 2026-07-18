@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "frostbyte-game-room",
+  "shortcutName": "霜白电竞",
+  "name": "Frostbyte Game Room",
+  "hero": "hero.jpg",
+  "texture": "texture.png",
+  "colors": {
+    "background": "#0E121A",
+    "panel": "#151A24",
+    "panelAlt": "#222A38",
+    "accent": "#B33E50",
+    "gold": "#77C8EE",
+    "text": "#F5F7FB",
+    "muted": "#AAB5C7",
+    "line": "#46576F",
+    "link": "#7DD5F5",
+    "code": "#BFD9F4",
+    "quote": "#A8B8D2",
+    "success": "#68B99B",
+    "warning": "#D7B85C",
+    "danger": "#E66D7C",
+    "diffAdded": "#58A987",
+    "diffRemoved": "#D05D6E"
+  },
+  "layout": {
+    "heroSize": "cover",
+    "heroPosition": "52% 50%",
+    "textureOpacity": 0
+  }
+}

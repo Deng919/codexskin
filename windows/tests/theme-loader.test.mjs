@@ -186,3 +186,21 @@ test("loads the blue night theme as a separate theme pack", async () => {
   assert.ok(loaded.hero.bytes.length > 1_000_000);
   assert.ok(loaded.hero.bytes.length < MAX_ART_BYTES);
 });
+
+test("loads all three additional flattened theme packs", async () => {
+  const expected = new Map([
+    ["neon-sakura-city", ["#0B0C1A", "#B451A9"]],
+    ["frostbyte-game-room", ["#0E121A", "#B33E50"]],
+    ["celestial-tide", ["#020817", "#1687B8"]],
+  ]);
+
+  for (const [themeId, [background, accent]] of expected) {
+    const loaded = await loadTheme(path.join(windowsRoot, "themes", themeId));
+    assert.equal(loaded.theme.id, themeId);
+    assert.equal(loaded.theme.colors.background, background);
+    assert.equal(loaded.theme.colors.accent, accent);
+    assert.equal(loaded.theme.character, null);
+    assert.ok(loaded.hero.bytes.length > 1_000_000);
+    assert.ok(loaded.hero.bytes.length < MAX_ART_BYTES);
+  }
+});

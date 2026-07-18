@@ -39,7 +39,7 @@
 ## 切换与恢复
 
 - `switch-dream-skin.ps1` 同步更新 `active-theme.txt`、基础配色和注入守护进程。
-- `xuanjia-chijin` 与 `blue-night-red-eyes` 可以双向热切换。
+- 五套成品主题可以双向热切换，主题 ID、背景和完整语义色同步更新。
 - reload 后主题自动恢复，不重复创建 style 或装饰节点。
 - “恢复初始配色”快捷方式会还原安装前的 appearance 配置、移除 live 注入并以无注入模式重启 Codex；恢复不影响线程、项目、插件、登录和宠物。
 
