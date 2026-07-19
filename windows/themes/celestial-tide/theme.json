@@ -5,6 +5,7 @@
   "name": "Celestial Tide",
   "hero": "hero.jpg",
   "texture": "texture.png",
+  "character": "assets/celestial-tide-character-cutout.png",
   "colors": {
     "background": "#020817",
     "panel": "#071528",
@@ -26,6 +27,10 @@
   "layout": {
     "heroSize": "cover",
     "heroPosition": "42% 50%",
-    "textureOpacity": 0
+    "textureOpacity": 0,
+    "characterSize": "auto 94%",
+    "characterPosition": "right -3vw bottom -5vh",
+    "characterSizeNarrow": "auto 80%",
+    "characterPositionNarrow": "right -20vw bottom -4vh"
   }
 }
