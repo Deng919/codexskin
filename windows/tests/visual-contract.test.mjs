@@ -42,6 +42,12 @@ test("renderer maps visual theme data to CSS variables", async () => {
   assert.doesNotMatch(renderer, /--theme-overlay-strength/);
   assert.match(renderer, /--theme-texture-opacity/);
   for (const variable of [
+    "character-size", "character-position",
+    "character-size-narrow", "character-position-narrow",
+  ]) {
+    assert.match(renderer, new RegExp(`--theme-${variable}`));
+  }
+  for (const variable of [
     "link", "code", "quote", "success", "warning", "danger", "diff-added", "diff-removed",
   ]) {
     assert.match(renderer, new RegExp(`--theme-${variable}`));
@@ -95,6 +101,8 @@ test("home and task views share the same full-window scene", async () => {
   assert.match(css, /main\.main-surface\.dream-home-shell/);
   assert.match(css, /main\.main-surface\.dream-task-shell/);
   assert.match(css, /main\.main-surface\.dream-home-shell[\s\S]{0,240}var\(--dream-character\)[\s\S]{0,120}var\(--dream-hero\)/);
+  assert.match(css, /var\(--theme-character-position\)\s*\/\s*var\(--theme-character-size\)/);
+  assert.match(css, /var\(--theme-character-position-narrow\)\s*\/\s*var\(--theme-character-size-narrow\)/);
   assert.doesNotMatch(css, /\.dream-home[^{}]*::after[^{}]*\{[^}]*var\(--dream-character\)/s);
   assert.match(css, /min-height:\s*126px/);
   assert.match(css, /border-radius:\s*21px/);

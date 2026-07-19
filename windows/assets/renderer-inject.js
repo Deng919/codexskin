@@ -1,7 +1,7 @@
 ((cssText, heroDataUrl, textureDataUrl, characterDataUrl, themeConfig) => {
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
-  const VERSION = "3.4.2";
+  const VERSION = "3.4.3";
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const THEME_VARIABLES = [
     "--theme-panel", "--theme-panel-alt", "--theme-accent",
@@ -10,6 +10,8 @@
     "--theme-success", "--theme-warning", "--theme-danger",
     "--theme-diff-added", "--theme-diff-removed",
     "--theme-hero-size", "--theme-hero-position",
+    "--theme-character-size", "--theme-character-position",
+    "--theme-character-size-narrow", "--theme-character-position-narrow",
     "--theme-texture-opacity", "--dream-hero", "--dream-texture",
     "--dream-character",
   ];
@@ -58,6 +60,10 @@
       "--theme-diff-removed": colors.diffRemoved || "#B95C64",
       "--theme-hero-size": layout.heroSize || "cover",
       "--theme-hero-position": layout.heroPosition || "58% 36%",
+      "--theme-character-size": layout.characterSize || "auto 94%",
+      "--theme-character-position": layout.characterPosition || "right -5vw bottom -5vh",
+      "--theme-character-size-narrow": layout.characterSizeNarrow || "auto 82%",
+      "--theme-character-position-narrow": layout.characterPositionNarrow || "right -18vw bottom -4vh",
       "--theme-texture-opacity": String(layout.textureOpacity ?? 0.12),
       "--dream-hero": `url("${heroUrl}")`,
       "--dream-texture": `url("${textureUrl}")`,

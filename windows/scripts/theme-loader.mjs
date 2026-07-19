@@ -2,6 +2,12 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const MAX_ART_BYTES = 16 * 1024 * 1024;
+const CHARACTER_LAYOUT_DEFAULTS = Object.freeze({
+  characterSize: "auto 94%",
+  characterPosition: "right -5vw bottom -5vh",
+  characterSizeNarrow: "auto 82%",
+  characterPositionNarrow: "right -18vw bottom -4vh",
+});
 const BASE_COLOR_KEYS = [
   "background", "panel", "panelAlt", "accent",
   "gold", "text", "muted", "line",
@@ -73,6 +79,39 @@ function requireHeroPosition(value) {
   return normalized;
 }
 
+function percentageToken(token) {
+  const match = /^(\d{1,3}(?:\.\d+)?)%$/.exec(token);
+  return Boolean(match) && Number(match[1]) <= 200;
+}
+
+function requireCharacterSize(value, label) {
+  const normalized = requireText(value, label, 32);
+  const tokens = normalized.split(/\s+/);
+  const valid = tokens.length === 2 && (
+    (tokens[0] === "auto" && percentageToken(tokens[1])) ||
+    (percentageToken(tokens[0]) && tokens[1] === "auto")
+  );
+  if (valid) return normalized;
+  throw new Error(`${label} must contain auto and a percentage no larger than 200%`);
+}
+
+function characterOffsetToken(token) {
+  const match = /^(-?\d{1,3}(?:\.\d+)?)(px|vw|vh|%)$/.exec(token);
+  return Boolean(match) && Math.abs(Number(match[1])) <= 200;
+}
+
+function requireCharacterPosition(value, label) {
+  const normalized = requireText(value, label, 48);
+  const tokens = normalized.split(/\s+/);
+  const valid = tokens.length === 4 &&
+    ["left", "right"].includes(tokens[0]) &&
+    characterOffsetToken(tokens[1]) &&
+    ["top", "bottom"].includes(tokens[2]) &&
+    characterOffsetToken(tokens[3]);
+  if (valid) return normalized;
+  throw new Error(`${label} must use horizontal edge/offset and vertical edge/offset`);
+}
+
 function validateImageName(value, label) {
   const name = requireText(value, label, 120);
   const normalized = name.replaceAll("\\", "/");
@@ -142,6 +181,22 @@ export async function loadTheme(themeDir) {
       heroSize: requireHeroSize(layoutInput.heroSize),
       heroPosition: requireHeroPosition(layoutInput.heroPosition),
       textureOpacity: requireUnitInterval(layoutInput.textureOpacity, "layout.textureOpacity"),
+      characterSize: requireCharacterSize(
+        layoutInput.characterSize ?? CHARACTER_LAYOUT_DEFAULTS.characterSize,
+        "layout.characterSize",
+      ),
+      characterPosition: requireCharacterPosition(
+        layoutInput.characterPosition ?? CHARACTER_LAYOUT_DEFAULTS.characterPosition,
+        "layout.characterPosition",
+      ),
+      characterSizeNarrow: requireCharacterSize(
+        layoutInput.characterSizeNarrow ?? CHARACTER_LAYOUT_DEFAULTS.characterSizeNarrow,
+        "layout.characterSizeNarrow",
+      ),
+      characterPositionNarrow: requireCharacterPosition(
+        layoutInput.characterPositionNarrow ?? CHARACTER_LAYOUT_DEFAULTS.characterPositionNarrow,
+        "layout.characterPositionNarrow",
+      ),
     },
   };
 

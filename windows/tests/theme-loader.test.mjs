@@ -41,6 +41,10 @@ function baseTheme(overrides = {}) {
       heroSize: "cover",
       heroPosition: "58% 36%",
       textureOpacity: 0.12,
+      characterSize: "auto 94%",
+      characterPosition: "right -5vw bottom -5vh",
+      characterSizeNarrow: "auto 82%",
+      characterPositionNarrow: "right -18vw bottom -4vh",
     },
     ...overrides,
   };
@@ -67,10 +71,46 @@ test("loads a valid visual-only theme", async (t) => {
 
   assert.equal(loaded.theme.id, "xuanjia-chijin");
   assert.equal(loaded.theme.layout.heroPosition, "58% 36%");
+  assert.equal(loaded.theme.layout.characterSize, "auto 94%");
+  assert.equal(loaded.theme.layout.characterPosition, "right -5vw bottom -5vh");
+  assert.equal(loaded.theme.layout.characterSizeNarrow, "auto 82%");
+  assert.equal(loaded.theme.layout.characterPositionNarrow, "right -18vw bottom -4vh");
   assert.equal(loaded.hero.mime, "image/png");
   assert.equal(loaded.texture.mime, "image/png");
   assert.equal(loaded.character.mime, "image/png");
   assert.equal("tagline" in loaded.theme, false);
+});
+
+test("defaults optional character placement for older theme packs", async (t) => {
+  const theme = baseTheme();
+  const layout = { ...theme.layout };
+  delete layout.characterSize;
+  delete layout.characterPosition;
+  delete layout.characterSizeNarrow;
+  delete layout.characterPositionNarrow;
+  const root = await makeTheme({ layout });
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+
+  const loaded = await loadTheme(root);
+
+  assert.equal(loaded.theme.layout.characterSize, "auto 94%");
+  assert.equal(loaded.theme.layout.characterPosition, "right -5vw bottom -5vh");
+  assert.equal(loaded.theme.layout.characterSizeNarrow, "auto 82%");
+  assert.equal(loaded.theme.layout.characterPositionNarrow, "right -18vw bottom -4vh");
+});
+
+test("rejects unsafe character placement values", async (t) => {
+  const theme = baseTheme();
+  for (const [field, value] of [
+    ["characterSize", "url(https://example.invalid/a.png)"],
+    ["characterSizeNarrow", "auto 999%"],
+    ["characterPosition", "right; color: red"],
+    ["characterPositionNarrow", "calc(100% - 2px) center"],
+  ]) {
+    const root = await makeTheme({ layout: { ...theme.layout, [field]: value } });
+    t.after(() => fs.rm(root, { recursive: true, force: true }));
+    await assert.rejects(loadTheme(root), new RegExp(`layout\\.${field}`));
+  }
 });
 
 test("builds data URLs for all local theme images", async (t) => {
