@@ -3,8 +3,9 @@
   "id": "blue-night-red-eyes",
   "shortcutName": "冷蓝红瞳",
   "name": "Blue Night Red Eyes",
-  "hero": "hero.png",
+  "hero": "hero.jpg",
   "texture": "texture.png",
+  "character": "assets/blue-night-red-eyes-character-cutout.png",
   "colors": {
     "background": "#020817",
     "panel": "#071326",
@@ -26,6 +27,10 @@
   "layout": {
     "heroSize": "cover",
     "heroPosition": "50% 50%",
-    "textureOpacity": 0.05
+    "textureOpacity": 0.05,
+    "characterSize": "auto 88%",
+    "characterPosition": "right -2vw bottom -4vh",
+    "characterSizeNarrow": "auto 76%",
+    "characterPositionNarrow": "right -20vw bottom -2vh"
   }
 }
