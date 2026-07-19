@@ -5,6 +5,7 @@
   "name": "Frostbyte Game Room",
   "hero": "hero.jpg",
   "texture": "texture.png",
+  "character": "assets/frostbyte-game-room-character-cutout.png",
   "colors": {
     "background": "#0E121A",
     "panel": "#151A24",
@@ -26,6 +27,10 @@
   "layout": {
     "heroSize": "cover",
     "heroPosition": "52% 50%",
-    "textureOpacity": 0
+    "textureOpacity": 0,
+    "characterSize": "auto 86%",
+    "characterPosition": "right -4vw bottom -4vh",
+    "characterSizeNarrow": "auto 72%",
+    "characterPositionNarrow": "right -25vw bottom -3vh"
   }
 }
