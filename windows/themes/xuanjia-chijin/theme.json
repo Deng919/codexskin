@@ -27,6 +27,10 @@
   "layout": {
     "heroSize": "cover",
     "heroPosition": "50% 50%",
-    "textureOpacity": 0.12
+    "textureOpacity": 0.12,
+    "characterSize": "auto 94%",
+    "characterPosition": "right -5vw bottom -5vh",
+    "characterSizeNarrow": "auto 82%",
+    "characterPositionNarrow": "right -18vw bottom -4vh"
   }
 }

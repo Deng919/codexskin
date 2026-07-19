@@ -215,19 +215,22 @@ test("rejects oversized image files", async (t) => {
   await assert.rejects(loadTheme(root), /hero image must be no larger than/);
 });
 
-test("loads the blue night theme as a separate theme pack", async () => {
+test("loads the layered blue night theme pack", async () => {
   const loaded = await loadTheme(path.join(windowsRoot, "themes", "blue-night-red-eyes"));
 
   assert.equal(loaded.theme.id, "blue-night-red-eyes");
   assert.equal(loaded.theme.colors.background, "#020817");
   assert.equal(loaded.theme.colors.accent, "#176CA4");
   assert.equal(loaded.theme.layout.heroPosition, "50% 50%");
-  assert.equal(loaded.theme.character, null);
-  assert.ok(loaded.hero.bytes.length > 1_000_000);
+  assert.equal(loaded.theme.layout.characterSize, "auto 88%");
+  assert.equal(loaded.character.mime, "image/png");
+  assert.ok(loaded.character.bytes.length > 500_000);
+  assert.ok(loaded.character.bytes.length < MAX_ART_BYTES);
+  assert.ok(loaded.hero.bytes.length > 100_000);
   assert.ok(loaded.hero.bytes.length < MAX_ART_BYTES);
 });
 
-test("loads all three additional flattened theme packs", async () => {
+test("loads all three additional layered theme packs", async () => {
   const expected = new Map([
     ["neon-sakura-city", ["#0B0C1A", "#B451A9"]],
     ["frostbyte-game-room", ["#0E121A", "#B33E50"]],
@@ -239,8 +242,11 @@ test("loads all three additional flattened theme packs", async () => {
     assert.equal(loaded.theme.id, themeId);
     assert.equal(loaded.theme.colors.background, background);
     assert.equal(loaded.theme.colors.accent, accent);
-    assert.equal(loaded.theme.character, null);
-    assert.ok(loaded.hero.bytes.length > 1_000_000);
+    assert.match(loaded.theme.layout.characterSize, /%$/);
+    assert.equal(loaded.character.mime, "image/png");
+    assert.ok(loaded.character.bytes.length > 500_000);
+    assert.ok(loaded.character.bytes.length < MAX_ART_BYTES);
+    assert.ok(loaded.hero.bytes.length > 100_000);
     assert.ok(loaded.hero.bytes.length < MAX_ART_BYTES);
   }
 });

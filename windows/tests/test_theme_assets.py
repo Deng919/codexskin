@@ -40,16 +40,30 @@ class ThemeAssetsTest(unittest.TestCase):
             with self.subTest(theme=theme_id):
                 self.assertNotIn("avatar", config)
 
-    def test_foregrounds_match_each_theme_composition(self):
-        xuanjia_root, xuanjia = self.themes["xuanjia-chijin"]
-        with Image.open(xuanjia_root / xuanjia["character"]) as foreground:
-            self.assertEqual(foreground.mode, "RGBA")
-            self.assertIsNotNone(foreground.getchannel("A").getbbox())
-
-        for theme_id in self.expected_theme_ids - {"xuanjia-chijin"}:
+    def test_every_finished_theme_has_a_real_foreground(self):
+        required_layout = {
+            "characterSize",
+            "characterPosition",
+            "characterSizeNarrow",
+            "characterPositionNarrow",
+        }
+        for theme_id, (root, config) in self.themes.items():
             with self.subTest(theme=theme_id):
-                _, config = self.themes[theme_id]
-                self.assertNotIn("character", config)
+                self.assertIn("character", config)
+                self.assertTrue(required_layout.issubset(config["layout"]))
+                foreground_path = root / config["character"]
+                self.assertLess(foreground_path.stat().st_size, 16 * 1024 * 1024)
+                with Image.open(foreground_path) as foreground:
+                    self.assertEqual(foreground.mode, "RGBA")
+                    alpha = foreground.getchannel("A")
+                    self.assertIsNotNone(alpha.getbbox())
+                    corners = [
+                        alpha.getpixel((0, 0)),
+                        alpha.getpixel((foreground.width - 1, 0)),
+                        alpha.getpixel((0, foreground.height - 1)),
+                        alpha.getpixel((foreground.width - 1, foreground.height - 1)),
+                    ]
+                    self.assertEqual(corners, [0, 0, 0, 0])
 
 
 if __name__ == "__main__":
