@@ -1,6 +1,6 @@
 # Windows 主题制作流程
 
-本文记录仓库中两套 Windows 成品主题实际采用的生产流程。目标是让新增主题只提供数据和图片，不复制注入脚本、不修改 Codex 官方安装目录，也不破坏会话、插件、宠物窗口和原生交互。
+本文记录仓库中五套 Windows 成品主题实际采用的生产流程。目标是让新增主题只提供数据和图片，不复制注入脚本、不修改 Codex 官方安装目录，也不破坏会话、插件、宠物窗口和原生交互。
 
 ## 成品结构
 
@@ -9,16 +9,16 @@
 ```text
 themes/<theme-id>/
 ├── theme.json
-├── hero.png
+├── hero.jpg
 ├── texture.png
 └── assets/
-    └── character.png  # 可选
+    └── character.png
 ```
 
-- `hero`：固定在主窗口底层的 16:9 场景图。
+- `hero`：固定在主窗口底层的 16:9 无人物场景图，人物遮挡区域必须自然补全。
 - `texture`：低透明度叠加纹理；不需要纹理时也提供透明 PNG。
-- `character`：可选的透明人物前景。原图已经包含人物时直接省略该字段，不创建占位文件。
-- `theme.json`：主题 ID、快捷方式名称、资源路径、语义色和背景裁切参数。
+- `character`：带真实 Alpha 的人物前景，保留原图人物像素，不使用透明占位文件。
+- `theme.json`：主题 ID、快捷方式名称、资源路径、语义色、背景裁切和人物落位参数。
 
 ## 图片准备
 
@@ -26,12 +26,10 @@ themes/<theme-id>/
 2. 单张资源必须小于 `16 MiB`；不要为了体积盲目降质，先移除无用 Alpha 和元数据。
 3. 左侧保留稳定的文字阅读区，人物或视觉主体放在中右侧。
 4. 图片中不要嵌入 UI 文案、Logo 或按钮，所有交互继续使用 Codex 原生控件。
-5. 如果使用透明人物层，必须检查白边、棋盘格残留、断发、裁肩和多个窗口比例下的裁切。
+5. 必须检查人物层白边、棋盘格残留、断发、裁肩和多个窗口比例下的裁切。
+6. 与人物空间关系不可分割的支撑物可以并入前景。例如 `frostbyte-game-room` 将人物、手柄、连接线和电竞椅作为一个前景组，房间设备和地面仍属于背景。
 
-仓库中的两种构图代表两条可靠路径：
-
-- `xuanjia-chijin`：无人物场景底图 + 透明人物层。
-- `blue-night-red-eyes`：人物已在 4K 场景图中，不配置额外人物层。
+五套成品统一采用“无人物场景底图 + 透明人物层”。背景补全与人物抠图分别验收，不能把人物烘焙回 `hero`，也不能同时在背景和前景中保留重复人物。
 
 ## 配置主题
 
@@ -43,8 +41,9 @@ themes/<theme-id>/
   "id": "blue-night-red-eyes",
   "shortcutName": "冷蓝红瞳",
   "name": "Blue Night Red Eyes",
-  "hero": "hero.png",
-  "texture": "texture.png",
+    "hero": "hero.jpg",
+    "texture": "texture.png",
+    "character": "assets/blue-night-red-eyes-character-cutout.png",
   "colors": {
     "background": "#020817",
     "panel": "#071326",
@@ -66,10 +65,19 @@ themes/<theme-id>/
   "layout": {
     "heroSize": "cover",
     "heroPosition": "50% 50%",
-    "textureOpacity": 0.05
+    "textureOpacity": 0.05,
+    "characterSize": "auto 88%",
+    "characterPosition": "right -2vw bottom -4vh",
+    "characterSizeNarrow": "auto 76%",
+    "characterPositionNarrow": "right -20vw bottom -2vh"
   }
 }
 ```
+
+- `characterSize`、`characterPosition`：宽窗口人物尺寸与落位。
+- `characterSizeNarrow`、`characterPositionNarrow`：窄窗口人物尺寸与落位。
+- 人物尺寸使用 `auto <百分比>`；位置使用 `right|left <偏移> bottom|top <偏移>`，例如 `right -2vw bottom -4vh`。
+- 旧 schema v1 主题缺少这些字段时沿用玄甲赤金默认值；新成品必须显式配置。
 
 颜色字段必须表达用途，而不是某个主题的固定颜色。共享 CSS 只引用 `--theme-*` 变量，因此切换主题时建议卡、项目选择器、输入框、按钮、边框、滚动条和正文语义色会一起换色。
 

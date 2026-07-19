@@ -318,7 +318,7 @@ Expected: transparent corners and nonempty alpha; no tracked file changes.
 
 ```powershell
 $env:U2NET_HOME="$root\models"
-& "$root\venv\Scripts\python.exe" -m rembg i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\blue-night-red-eyes-source.png" "$root\cutouts\blue-night-red-eyes-raw.png"
+& "$root\venv\Scripts\rembg.exe" i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\blue-night-red-eyes-source.png" "$root\cutouts\blue-night-red-eyes-raw.png"
 & "$root\venv\Scripts\python.exe" "$root\tools\prepare-layered-assets.py" cutout --input "$root\cutouts\blue-night-red-eyes-raw.png" --out "$root\cutouts\blue-night-red-eyes-character-cutout.png"
 ```
 
@@ -368,7 +368,7 @@ git commit -m "feat(windows): layer the blue night theme"
 
 ```powershell
 $env:U2NET_HOME="$root\models"
-& "$root\venv\Scripts\python.exe" -m rembg i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\neon-sakura-city-source.jpg" "$root\cutouts\neon-sakura-city-raw.png"
+& "$root\venv\Scripts\rembg.exe" i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\neon-sakura-city-source.jpg" "$root\cutouts\neon-sakura-city-raw.png"
 & "$root\venv\Scripts\python.exe" "$root\tools\prepare-layered-assets.py" cutout --input "$root\cutouts\neon-sakura-city-raw.png" --out "$root\cutouts\neon-sakura-city-character-cutout.png"
 ```
 
@@ -414,8 +414,8 @@ git commit -m "feat(windows): layer the neon sakura theme"
 
 ```powershell
 $env:U2NET_HOME="$root\models"
-& "$root\venv\Scripts\python.exe" -m rembg i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\frostbyte-game-room-source.png" "$root\cutouts\frostbyte-person.png"
-& "$root\venv\Scripts\python.exe" -m rembg i -m birefnet-general -a -af 240 -ab 10 -ae 6 "$root\sources\frostbyte-game-room-source.png" "$root\cutouts\frostbyte-group.png"
+& "$root\venv\Scripts\rembg.exe" i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\frostbyte-game-room-source.png" "$root\cutouts\frostbyte-person.png"
+& "$root\venv\Scripts\rembg.exe" i -m birefnet-general -a -af 240 -ab 10 -ae 6 "$root\sources\frostbyte-game-room-source.png" "$root\cutouts\frostbyte-group.png"
 ```
 
 Merge alpha only inside normalized ROI `x=0.18..0.76`, `y=0.10..1.00`, using original source RGB:
@@ -467,7 +467,7 @@ git commit -m "feat(windows): layer the frostbyte game room"
 
 ```powershell
 $env:U2NET_HOME="$root\models"
-& "$root\venv\Scripts\python.exe" -m rembg i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\celestial-tide-source.png" "$root\cutouts\celestial-tide-raw.png"
+& "$root\venv\Scripts\rembg.exe" i -m isnet-anime -a -af 240 -ab 10 -ae 8 "$root\sources\celestial-tide-source.png" "$root\cutouts\celestial-tide-raw.png"
 & "$root\venv\Scripts\python.exe" "$root\tools\prepare-layered-assets.py" cutout --input "$root\cutouts\celestial-tide-raw.png" --out "$root\cutouts\celestial-tide-character-cutout.png"
 ```
 

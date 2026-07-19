@@ -34,10 +34,10 @@ Five packs are verified in the real Codex window across live theme switches and 
 
 <p align="center">
   <img src="docs/images/themes/blue-night-red-eyes-home.png" alt="Blue Night Red Eyes" width="900"><br>
-  <sub>Blue Night Red Eyes: flattened 4K scene, icy-blue semantics, no extra character layer</sub>
+  <sub>Blue Night Red Eyes: clean 4K background, original-pixel transparent character, icy-blue semantics</sub>
 </p>
 
-Three additional flattened-scene packs are included: `Neon Sakura City`, `Frostbyte Game Room`, and `Celestial Tide`. Each has its own semantic palette and no extra character or avatar overlay.
+Three additional layered packs are included: `Neon Sakura City`, `Frostbyte Game Room`, and `Celestial Tide`. All five finished themes separate the character-free scene from a transparent foreground and define distinct wide/narrow placement. Frostbyte keeps the person, controller, cable, and gaming chair in one foreground group.
 
 Generated shortcuts switch among all five packs without restarting an already-debuggable Codex window. See [`windows/THEME_AUTHORING.md`](./windows/THEME_AUTHORING.md) for the production workflow.
 
