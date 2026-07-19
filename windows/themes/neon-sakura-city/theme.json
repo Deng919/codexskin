@@ -5,6 +5,7 @@
   "name": "Neon Sakura City",
   "hero": "hero.jpg",
   "texture": "texture.png",
+  "character": "assets/neon-sakura-city-character-cutout.png",
   "colors": {
     "background": "#0B0C1A",
     "panel": "#171525",
@@ -26,6 +27,10 @@
   "layout": {
     "heroSize": "cover",
     "heroPosition": "50% 50%",
-    "textureOpacity": 0
+    "textureOpacity": 0,
+    "characterSize": "auto 74%",
+    "characterPosition": "right -2vw bottom -3vh",
+    "characterSizeNarrow": "auto 62%",
+    "characterPositionNarrow": "right -28vw bottom -2vh"
   }
 }
