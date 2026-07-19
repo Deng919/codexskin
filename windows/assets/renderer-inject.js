@@ -1,7 +1,7 @@
 ((cssText, heroDataUrl, textureDataUrl, characterDataUrl, themeConfig) => {
   const STATE_KEY = "__CODEX_DREAM_SKIN_STATE__";
   const STYLE_ID = "codex-dream-skin-style";
-  const VERSION = "3.4.3";
+  const VERSION = "3.4.4";
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const THEME_VARIABLES = [
     "--theme-panel", "--theme-panel-alt", "--theme-accent",

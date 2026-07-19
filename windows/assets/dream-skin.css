@@ -237,7 +237,8 @@ html.codex-dream-skin .dream-home {
   height: 38px;
   display: grid !important;
   place-items: center;
-  margin: 0 auto;
+  justify-self: center;
+  margin: 0;
   border: 1px solid color-mix(in srgb, var(--theme-gold) 58%, transparent);
   border-radius: 50%;
   color: var(--theme-text) !important;
@@ -252,10 +253,14 @@ html.codex-dream-skin .dream-home {
 }
 
 .dream-home .group\/home-suggestions button > span:first-child {
-  justify-content: center !important;
+  display: grid !important;
+  place-items: center !important;
+  place-content: center !important;
+  width: 100% !important;
 }
 
 .dream-home .group\/home-suggestions button > span:last-child {
+  width: 100% !important;
   align-items: center !important;
   text-align: center !important;
 }

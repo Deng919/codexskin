@@ -115,6 +115,26 @@ test("home and task views share the same full-window scene", async () => {
   assert.doesNotMatch(css, /content:\s*["'][^"']+["']/);
 });
 
+test("home suggestion icons and labels share one centered axis", async () => {
+  const css = await read("assets/dream-skin.css");
+  const renderer = await read("assets/renderer-inject.js");
+
+  assert.match(renderer, /const VERSION = "3\.4\.4";/);
+
+  assert.match(
+    css,
+    /group\\\/home-suggestions button > span:first-child\s*\{[^}]*display:\s*grid\s*!important;[^}]*place-items:\s*center\s*!important;[^}]*place-content:\s*center\s*!important;[^}]*width:\s*100%\s*!important;/s,
+  );
+  assert.match(
+    css,
+    /group\\\/home-suggestions button > span:first-child > span:first-child\s*\{[^}]*justify-self:\s*center;[^}]*margin:\s*0;/s,
+  );
+  assert.match(
+    css,
+    /group\\\/home-suggestions button > span:last-child\s*\{[^}]*width:\s*100%\s*!important;[^}]*align-items:\s*center\s*!important;[^}]*text-align:\s*center\s*!important;/s,
+  );
+});
+
 test("xuanjia scene centers the battlefield behind the character layer", async () => {
   const config = JSON.parse(await read("themes/xuanjia-chijin/theme.json"));
 
